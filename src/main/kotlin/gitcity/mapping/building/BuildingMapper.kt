@@ -1,31 +1,42 @@
 package gitcity.mapping.building
 
 import gitcity.ChangeLogAnalysis
-import gitcity.mapping.treemap.TreeModel
-import gitcity.repository.RepoFile
-import gitcity.mapping.treemap.MapItem
-import gitcity.mapping.treemap.Mappable
+import gitcity.info
 import gitcity.mapping.treemap.Rect
 import gitcity.mapping.treemap.SquarifiedLayout
+import gitcity.mapping.treemap.TreeModel
+import gitcity.repository.RepoFile
+import gitcity.trace
 
 /**
  * Various algorithms, settings and heuristics to influence the placement, sizing and other visual properties of the "buildings" in
  * GitCity representing the files.
  * @author Benjamin Schmid <benjamin.schmid@exxcellent.de>
  */
-//val STREET_WIDTH = 8
-
 class BuildingMapper(analysis: ChangeLogAnalysis) {
+
+    val treeMap: TreeModel
+    val tree: RepoFile
 
     private val BUILDING_MAX_HEIGHT = 120
     private val BUILDING_MAX_HEIGHT_VARIANCE = 20
+    private val BUILDING_AVG_HEIGHT = 20
 
-    val treeMap: TreeModel
-    val tree = analysis.epochs.last().fileTree
+    private var worldLength: Double
+    private var largestHeight: Double = 0.0
 
     init {
-        treeMap = tree.toTreeModel { it -> dimBuildingArea(it) }
-        treeMap.layout(SquarifiedLayout(), Rect(-1000.0, -1000.0, WORLD_LENGTH, WORLD_LENGTH))
+        tree = analysis.epochs.last().fileTree
+
+        worldLength = dimWorldLength(tree.lineCount.toDouble())
+
+        treeMap = tree.toTreeModel(this)
+        treeMap.assertFileSizeSums()
+        treeMap.assertSizes()
+
+        treeMap.layout(SquarifiedLayout(), Rect(-worldLength / 2, -worldLength / 2, worldLength, worldLength))
+
+        info("largest building: $largestHeight")
     }
 
     /** Calculate desired building area based on line count (building volume). */
@@ -33,11 +44,11 @@ class BuildingMapper(analysis: ChangeLogAnalysis) {
         val volume = file.lineCount.toDouble()
 
         // Height assuming a cubic with 12 equals sides
-        var height = Math.pow(volume, 1.0 / 3)
+        val height = Math.pow(volume, 1.0 / 3)
 
         // We have a semi-random maximum height per building
-        val maxHeight = Math.ceil(BUILDING_MAX_HEIGHT - Math.floor(Math.random() * BUILDING_MAX_HEIGHT_VARIANCE))
-        height = Math.min(height, maxHeight)
+        //val maxHeight = Math.ceil(BUILDING_MAX_HEIGHT - Math.floor(Math.random() * BUILDING_MAX_HEIGHT_VARIANCE))
+        //height = Math.min(height, maxHeight)
 
         // resulting ground area would be
         val area = volume / height
@@ -48,33 +59,16 @@ class BuildingMapper(analysis: ChangeLogAnalysis) {
         // Add extra "area" for the surrounding street gap
         //area = pow(sqrt(area) + 2 * STREET_WIDTH, 2.0)
 
+        trace("${file.name}: ${file.lineCount} -> ${area.toInt()} x ${height.toInt()}")
+
+        if (file.children == null) {
+            largestHeight = Math.max(largestHeight, height)
+        }
+
         return area
     }
 
-    fun heightCorrectionFactor(): Double {
-        // 1 line should be equal to 1x1x1
-        return WORLD_LENGTH * WORLD_LENGTH / tree.lineCount
-    }
+    fun dimWorldLength(totalVolume: Double) = Math.sqrt(totalVolume / BUILDING_AVG_HEIGHT)
 
 }
 
-fun RepoFile.toTreeModel(nodeSizer: (RepoFile) -> Double ) : TreeModel {
-    val treeModel = TreeModel(MappableRepoFile(this, nodeSizer))
-
-    val fileChildren = this.children
-    if (fileChildren != null) {
-        for (child in fileChildren.values) {
-            if (child.lineCount > 0) {   // ignore empty files
-                treeModel.addChild(TreeModel(MappableRepoFile(child, nodeSizer)))
-            }
-        }
-    }
-
-    return treeModel
-}
-
-
-class MappableRepoFile(val repoFile: RepoFile, sizer: (f: RepoFile) -> Double) : MapItem(sizer(repoFile)), Mappable { }
-
-/** The length/width of the world box */
-val WORLD_LENGTH = 2000.0

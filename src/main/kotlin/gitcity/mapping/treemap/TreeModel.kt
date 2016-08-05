@@ -8,71 +8,17 @@
 
 package gitcity.mapping.treemap
 
+import gitcity.mapping.building.MappableRepoFile
+
 /**
  * An implementation of MapModel that represents  a hierarchical structure. It currently cannot  handle structural changes to the tree,
  * since it caches a fair amount of information.
  */
 class TreeModel(val mappable: Mappable) : MapModel {
+
     val children = mutableListOf<TreeModel>()
-
-    private var childItems: Array<Mappable>? = null
-    //private var cachedTreeItems: List<Mappable>? = null
-    private var parent: TreeModel? = null
-        set(parent) {
-            var p: TreeModel? = parent
-            while (p != null) {
-                if (p === this) {
-                    throw IllegalArgumentException("Circular ancestry!")
-                }
-                p = p.parent
-            }
-            field = parent
-        }
-
-    private fun depth(): Int {
-        if (this.parent == null) {
-            return 0
-        }
-        return 1 + this.parent!!.depth()
-    }
-
-    private fun layout(tiling: MapLayout) {
-        layout(tiling, mappable.bounds)
-    }
-
-    fun layout(tiling: MapLayout, bounds: Rect) {
-        mappable.bounds = bounds
-        if (children.isEmpty()) {
-            return
-        }
-        setSums()
-        tiling.layout(this, bounds)
-        for (i in children.size - 1 downTo 0) {
-            children[i].layout(tiling)
-        }
-    }
-
-    /*private fun addTreeItems(v: MutableList<Mappable>) {
-        if (children.isEmpty()) {
-            v.add(mappable)
-        } else {
-            for (i in children.size - 1 downTo 0) {
-                children[i].addTreeItems(v)
-            }
-        }
-    }*/
-
-    private fun setSums(): Double {
-        val s = mappable.size
-        /*
-        var s = 0
-        for (i in childCount() - 1 downTo 0) {
-            s += getChild(i).setSums()
-        }
-        mappable.size = s*/
-        return s
-    }
-
+    val isLeaf: Boolean
+        get() = children.isEmpty()
     override val items: Array<Mappable>
         get() {
             val ci = childItems
@@ -91,6 +37,53 @@ class TreeModel(val mappable: Mappable) : MapModel {
             }
         }
 
+    private var childItems: Array<Mappable>? = null
+    private var parent: TreeModel? = null
+        set(parent) {
+            var p = parent
+            while (p != null) {
+                if (p === this) throw IllegalArgumentException("Circular ancestry!")
+                p = p.parent
+            }
+            field = parent
+        }
+
+    private fun setSums(): Double {
+        if (isLeaf) return mappable.size
+        else {
+            val sum = children.fold(0.0, { s, tm -> s + tm.mappable.size })
+            //mappable.size = sum
+            return sum
+        }
+    }
+
+
+    fun assertFileSizeSums() {
+        if (isLeaf) return
+        val sum = children.fold(0, { s, tm -> s + (tm.mappable as MappableRepoFile).repoFile.lineCount })
+        if (sum != (mappable as MappableRepoFile).repoFile.lineCount)
+            throw IllegalStateException("Line count mismatch")
+        children.forEach { it.assertFileSizeSums() }
+    }
+
+    fun assertSizes() {
+        children.forEach { it.assertSizes() }
+        val sum = children.fold(0.0, { s, tm -> s + tm.mappable.size })
+        if (!isLeaf && Math.abs(sum - mappable.size) > 0.000000001)
+            throw IllegalStateException("Size mismatch")
+    }
+
+    fun layout(tiling: MapLayout, bounds: Rect) {
+        mappable.bounds = bounds
+        if (children.isEmpty()) {
+            return
+        }
+        tiling.layout(this, bounds)
+        for (i in children.size - 1 downTo 0) {
+            children[i].layout(tiling)
+        }
+    }
+
     fun addChild(child: TreeModel) {
         child.parent = this
         children.add(child)
@@ -102,6 +95,15 @@ class TreeModel(val mappable: Mappable) : MapModel {
         for (child in children) {
             child.accept(visitor)
         }
+    }
+
+    private fun depth(): Int {
+        val p = this.parent
+        return if (p == null) 0 else p.depth() + 1
+    }
+
+    private fun layout(tiling: MapLayout) {
+        layout(tiling, mappable.bounds)
     }
 
 }

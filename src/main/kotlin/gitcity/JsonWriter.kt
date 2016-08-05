@@ -21,14 +21,14 @@ class JsonWriter(private val treeModel: TreeModel) {
         var first = true
 
         override fun visit(model: TreeModel) {
-            if (model.children.isNotEmpty()) return
+            if (!model.isLeaf) return
             if (!first) writer.append(",\n")
             first = false
             val mi = model.mappable as MappableRepoFile
             // Area is surrounding street gap + building area. Recover real building sizes
             val buildingWidth = mi.bounds.w //- 2 * STREET_WIDTH
             val buildingLength = mi.bounds.h //- 2 * STREET_WIDTH
-            val buildingHeight = mi.repoFile.lineCount / (buildingLength * buildingWidth)
+            val buildingHeight = mi.size / (buildingLength * buildingWidth)
 
             writer.append("{" +
                     // The client expects x/y in the center of the cube

@@ -11,7 +11,7 @@ package gitcity.mapping.treemap
 /** Interface representing an object that can be placed in a gitcity.mapping.treemap layout.*/
 interface Mappable {
     /** Corresponds to area in map. */
-    var size: Double
+    val size: Double
     /** The bounding rectangle of the item in the map. */
     var bounds: Rect
     /** The sort order of the item. */

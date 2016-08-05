@@ -1,6 +1,5 @@
 import gitcity.ChangeLogAnalysis
 import gitcity.GitCityOptions
-import gitcity.model.*
 import gitcity.repository.ChangeLog
 import gitcity.repository.ChangeSet
 import gitcity.repository.FileChange

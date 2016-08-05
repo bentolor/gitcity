@@ -4,7 +4,7 @@ package gitcity
  * @author Benjamin Schmid <benjamin.schmid@exxcellent.de>
  */
 
-var TRACE = false
+var TRACE = true
 var DEBUG = true
 
 fun trace(msg: Any?) {

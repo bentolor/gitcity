@@ -1,9 +1,9 @@
 
 import gitcity.ChangeLogAnalysis
-import gitcity.repository.GitRepositoryReader
-import gitcity.mapping.building.BuildingMapper
-import gitcity.JsonWriter
 import gitcity.GitCityOptions
+import gitcity.JsonWriter
+import gitcity.mapping.building.BuildingMapper
+import gitcity.repository.GitRepositoryReader
 import spark.Spark.*
 
 /**
@@ -19,7 +19,7 @@ fun main(args: Array<String>) {
 
     val buildingMapper = BuildingMapper(analysis)
 
-    port(8080)
+    port(8000)
     staticFiles.location("/gitcity-client")
     get("/items/latest", { req, res ->
         res.type("application/json")

@@ -6,4 +6,4 @@ A  3D / VR visualisation of a git file history
 
 1. Install Java 8 and ensure `JAVA_HOME` is pointing to it
 2. run `./gradlew run` or `gradlew.bat run`
-3. Go to http://localhost:8080/
+3. Go to http://localhost:8000/

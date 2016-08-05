@@ -1,6 +1,5 @@
 package gitcity
 
-import gitcity.model.*
 import gitcity.repository.*
 
 /**
