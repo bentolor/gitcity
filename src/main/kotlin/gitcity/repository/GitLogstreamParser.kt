@@ -1,8 +1,11 @@
-package gitcity
+package gitcity.repository
 
-import gitcity.model.ChangeLog
-import gitcity.model.ChangeSet
-import gitcity.model.FileChange
+import gitcity.info
+import gitcity.repository.ChangeLog
+import gitcity.repository.ChangeSet
+import gitcity.repository.FileChange
+import gitcity.GitCityOptions
+import gitcity.trace
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.Reader
@@ -12,7 +15,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
 
-class GitLogstreamParser(private val changelogName: String, private val gitLogStream: InputStream) {
+class GitLogstreamParser(private val opts: GitCityOptions, private val gitLogStream: InputStream) {
 
     fun parse(): ChangeLog {
         val changeSets = ArrayList<ChangeSet>()
@@ -41,7 +44,7 @@ class GitLogstreamParser(private val changelogName: String, private val gitLogSt
         }
 
         info("Loaded and parsed ${changeSets.count()} commit statistics")
-        return ChangeLog(changelogName, changeSets)
+        return ChangeLog(opts.repoName, changeSets)
     }
 
     private fun parseHash(sha1: String): String {

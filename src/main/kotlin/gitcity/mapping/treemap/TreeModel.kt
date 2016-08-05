@@ -6,13 +6,7 @@
   http://www.cs.umd.edu/hcil/treemaps
  */
 
-package gitcity
-
-import gitcity.treemap.MapLayout
-import gitcity.treemap.MapModel
-import gitcity.treemap.Mappable
-import gitcity.treemap.Rect
-
+package gitcity.mapping.treemap
 
 /**
  * An implementation of MapModel that represents  a hierarchical structure. It currently cannot  handle structural changes to the tree,
@@ -103,15 +97,11 @@ class TreeModel(val mappable: Mappable) : MapModel {
         childItems = null
     }
 
-    fun accept(visitor: TreeeModelVisitor) {
+    fun accept(visitor: TreeModelVisitor) {
         visitor.visit(this)
         for (child in children) {
             child.accept(visitor)
         }
     }
 
-}
-
-interface TreeeModelVisitor {
-    fun visit(model: TreeModel)
 }

@@ -6,9 +6,9 @@
   http://www.cs.umd.edu/hcil/treemaps
  */
 
-package gitcity.treemap
+package gitcity.mapping.treemap
 
-/** "Squarified" gitcity.treemap layout invented by J.J. van Wijk */
+/** "Squarified" gitcity.mapping.treemap layout invented by J.J. van Wijk */
 class SquarifiedLayout : AbstractMapLayout() {
 
     public override fun layout(items: Array<Mappable>, bounds: Rect) {

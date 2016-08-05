@@ -1,9 +1,9 @@
 
 import gitcity.ChangeLogAnalysis
-import gitcity.GitRepositoryReader
-import gitcity.buildingmap.BuildingMapper
-import gitcity.json.JsonWriter
-import gitcity.model.GitCityOptions
+import gitcity.repository.GitRepositoryReader
+import gitcity.mapping.building.BuildingMapper
+import gitcity.JsonWriter
+import gitcity.GitCityOptions
 import spark.Spark.*
 
 /**

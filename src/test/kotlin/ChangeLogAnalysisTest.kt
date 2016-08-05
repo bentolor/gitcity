@@ -1,5 +1,9 @@
 import gitcity.ChangeLogAnalysis
+import gitcity.GitCityOptions
 import gitcity.model.*
+import gitcity.repository.ChangeLog
+import gitcity.repository.ChangeSet
+import gitcity.repository.FileChange
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.time.LocalDateTime

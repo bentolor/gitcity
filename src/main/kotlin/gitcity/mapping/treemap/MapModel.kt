@@ -6,9 +6,9 @@
   http://www.cs.umd.edu/hcil/treemaps
  */
 
-package gitcity.treemap
+package gitcity.mapping.treemap
 
-/** Model object used by MapLayout to represent data for a gitcity.treemap. */
+/** Model object used by MapLayout to represent data for a gitcity.mapping.treemap. */
 interface MapModel {
 
     /**

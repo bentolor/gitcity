@@ -1,4 +1,4 @@
-package gitcity.treemap
+package gitcity.mapping.treemap
 
 /**
  * Abstract class holding utility routines that several

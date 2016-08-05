@@ -6,7 +6,7 @@
   http://www.cs.umd.edu/hcil/treemaps
  */
 
-package gitcity.treemap
+package gitcity.mapping.treemap
 
 /** A simple implementation of the Mappable interface.  */
 open class MapItem constructor(size: Double = 1.0, override var order: Int = 0) : Mappable {

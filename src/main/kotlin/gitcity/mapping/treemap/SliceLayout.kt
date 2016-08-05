@@ -6,7 +6,7 @@
   http://www.cs.umd.edu/hcil/treemaps
  */
 
-package gitcity.treemap
+package gitcity.mapping.treemap
 
 /**
  * The original slice-and-dice layout for treemaps.

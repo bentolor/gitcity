@@ -1,8 +1,8 @@
-package gitcity.json
+package gitcity
 
-import gitcity.TreeModel
-import gitcity.TreeeModelVisitor
-import gitcity.buildingmap.MappableRepoFile
+import gitcity.mapping.building.MappableRepoFile
+import gitcity.mapping.treemap.TreeModel
+import gitcity.mapping.treemap.TreeModelVisitor
 import java.io.OutputStream
 import java.io.Writer
 
@@ -17,7 +17,7 @@ class JsonWriter(private val treeModel: TreeModel) {
         }
     }
 
-    private inner class LeafNodeJsonWriter(val writer: Writer) : TreeeModelVisitor {
+    private inner class LeafNodeJsonWriter(val writer: Writer) : TreeModelVisitor {
         var first = true
 
         override fun visit(model: TreeModel) {

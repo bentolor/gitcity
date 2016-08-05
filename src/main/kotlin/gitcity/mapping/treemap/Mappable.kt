@@ -6,9 +6,9 @@
   http://www.cs.umd.edu/hcil/treemaps
  */
 
-package gitcity.treemap
+package gitcity.mapping.treemap
 
-/** Interface representing an object that can be placed in a gitcity.treemap layout.*/
+/** Interface representing an object that can be placed in a gitcity.mapping.treemap layout.*/
 interface Mappable {
     /** Corresponds to area in map. */
     var size: Double

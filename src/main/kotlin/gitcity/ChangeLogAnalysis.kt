@@ -1,6 +1,7 @@
 package gitcity
 
 import gitcity.model.*
+import gitcity.repository.*
 
 /**
  * Analyze a git changelog and calculates statistics on a timeline

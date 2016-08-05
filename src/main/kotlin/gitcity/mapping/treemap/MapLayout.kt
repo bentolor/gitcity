@@ -1,6 +1,6 @@
-package gitcity.treemap
+package gitcity.mapping.treemap
 
-/** The interface for all gitcity.treemap layout algorithms. */
+/** The interface for all gitcity.mapping.treemap layout algorithms. */
 interface MapLayout {
     /**
      * Arrange the items in the given MapModel to fill the given rectangle.

@@ -1,4 +1,4 @@
-package gitcity.model
+package gitcity.repository
 
 import java.io.File
 import java.nio.file.Path

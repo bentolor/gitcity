@@ -6,7 +6,7 @@
   http://www.cs.umd.edu/hcil/treemaps
  */
 
-package gitcity.treemap
+package gitcity.mapping.treemap
 
 /**
  * A JDK 1.0 - compatible rectangle class that accepts double-valued parameters.

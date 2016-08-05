@@ -1,6 +1,6 @@
-import gitcity.GitLogstreamParser
-import gitcity.model.ChangeLog
-import gitcity.model.ChangeSet
+package gitcity.repository
+
+import gitcity.GitCityOptions
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -14,7 +14,7 @@ class GitLogstreamParserTest {
     @Before
     fun prepare() {
         val source = Thread.currentThread().contextClassLoader.getResourceAsStream("logstream-1.txt")
-        changeLog = GitLogstreamParser("logstream-1.txt", source).parse()
+        changeLog = GitLogstreamParser(GitCityOptions(), source).parse()
         changes = changeLog.changeSets
     }
 

@@ -1,12 +1,12 @@
-package gitcity.buildingmap
+package gitcity.mapping.building
 
 import gitcity.ChangeLogAnalysis
-import gitcity.TreeModel
-import gitcity.model.RepoFile
-import gitcity.treemap.MapItem
-import gitcity.treemap.Mappable
-import gitcity.treemap.Rect
-import gitcity.treemap.SquarifiedLayout
+import gitcity.mapping.treemap.TreeModel
+import gitcity.repository.RepoFile
+import gitcity.mapping.treemap.MapItem
+import gitcity.mapping.treemap.Mappable
+import gitcity.mapping.treemap.Rect
+import gitcity.mapping.treemap.SquarifiedLayout
 
 /**
  * Various algorithms, settings and heuristics to influence the placement, sizing and other visual properties of the "buildings" in
@@ -17,8 +17,9 @@ import gitcity.treemap.SquarifiedLayout
 
 class BuildingMapper(analysis: ChangeLogAnalysis) {
 
-    val BUILDING_MAX_HEIGHT = 120
-    val BUILDING_MAX_HEIGHT_VARIANCE = 20
+    private val BUILDING_MAX_HEIGHT = 120
+    private val BUILDING_MAX_HEIGHT_VARIANCE = 20
+
     val treeMap: TreeModel
     val tree = analysis.epochs.last().fileTree
 

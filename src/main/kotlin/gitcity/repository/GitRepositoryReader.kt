@@ -1,7 +1,10 @@
-package gitcity
+package gitcity.repository
 
-import gitcity.model.ChangeLog
-import gitcity.model.GitCityOptions
+import gitcity.repository.GitLogstreamParser
+import gitcity.debug
+import gitcity.info
+import gitcity.repository.ChangeLog
+import gitcity.GitCityOptions
 
 /**
  * Extract a git repository changelog into the gitcity gitcity.model.
@@ -15,10 +18,7 @@ class GitRepositoryReader {
      * Execute Git to log the changes in a Git repository
      */
     fun parseRepository(opts: GitCityOptions): ChangeLog {
-        val realPath = opts.repoPath.toRealPath()
-        val repoName = realPath.fileName.toString()
-
-        info("Dumping history of branch ${opts.branchName} of Git repository located at $realPath")
+        info("Dumping history of branch ${opts.branchName} of Git repository located at ${opts.realPath}")
 
         // Ouput separated by newlines:
         //   SHA1, Unix Timestamp, Authorname, Subject, "<deleted lines> <added lines> <path>", <empty line>
@@ -27,10 +27,10 @@ class GitRepositoryReader {
                 "--numstat --format=format:%H%n%at%n%aN%n%s"
 
         debug("Executing: $cmdLine")
-        val gitProcess = Runtime.getRuntime().exec(cmdLine, arrayOf(), realPath.toFile())
+        val gitProcess = Runtime.getRuntime().exec(cmdLine, arrayOf(), opts.realPath.toFile())
         val gitLogStream = gitProcess.inputStream
 
-        return GitLogstreamParser(repoName, gitLogStream).parse()
+        return GitLogstreamParser(opts, gitLogStream).parse()
     }
 
 }
