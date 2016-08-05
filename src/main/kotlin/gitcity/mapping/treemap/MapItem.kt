@@ -9,7 +9,7 @@
 package gitcity.mapping.treemap
 
 /** A simple implementation of the Mappable interface.  */
-open class MapItem constructor(override val size: Double,
+open class MapItem constructor(override var size: Double,
                                override var order: Int = 0) : Mappable {
     override var bounds: Rect = Rect(0.0, 0.0, 0.0, 0.0)
     override var depth: Int = 0

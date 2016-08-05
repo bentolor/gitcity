@@ -23,6 +23,6 @@ fun main(args: Array<String>) {
     staticFiles.location("/gitcity-client")
     get("/items/latest", { req, res ->
         res.type("application/json")
-        JsonWriter(buildingMapper.treeMap).writeTo(res.raw().outputStream)
+        JsonWriter(buildingMapper).writeTo(res.raw().outputStream)
     })
 }

@@ -11,19 +11,11 @@ data class RepoFile(
         var fileCount: Int = 0,
         var dirCount: Int = 0
 ) {
-    override fun toString(): String = toString(false)
-    fun toString(recurse: Boolean): String {
-        if (!recurse) return "$name [$lineCount]"
-        var indent = ""
-        var currentParent = parent
-        while (currentParent != null) {
-            indent += "  "
-            currentParent = currentParent.parent
-        }
-        var myString = "\n$indent$name [$lineCount]"
-        myString = children?.values?.fold(myString, { s, f -> s + f.toString() }) ?: myString
-        return myString
-    }
+
+    val isLeaf: Boolean
+        get() = children == null
+
+    fun getPathFiles(filePath: String): List<RepoFile> = this.getPathFiles(java.io.File(filePath).toPath())
 
     /**
      * Convert a file path into a list of Model files.
@@ -52,7 +44,18 @@ data class RepoFile(
         else listOf(wantedFile) + wantedFile.getPathFiles(filePath.subpath(1, filePath.nameCount))
     }
 
-    fun getPathFiles(filePath: String): List<RepoFile> = this.getPathFiles(java.io.File(filePath).toPath())
-
+    override fun toString(): String = toString(false)
+    fun toString(recurse: Boolean): String {
+        if (!recurse) return "$name [$lineCount]"
+        var indent = ""
+        var currentParent = parent
+        while (currentParent != null) {
+            indent += "  "
+            currentParent = currentParent.parent
+        }
+        var myString = "\n$indent$name [$lineCount]"
+        myString = children?.values?.fold(myString, { s, f -> s + f.toString() }) ?: myString
+        return myString
+    }
 }
 

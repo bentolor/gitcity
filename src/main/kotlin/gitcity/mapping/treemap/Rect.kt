@@ -13,14 +13,16 @@ package gitcity.mapping.treemap
  */
 class Rect {
 
-    var x: Double = 0.toDouble()
-    var y: Double = 0.toDouble()
-    var w: Double = 0.toDouble()
-    var h: Double = 0.toDouble()
+    var x: Double = 0.0
+    var y: Double = 0.0
+    var w: Double = 0.0
+    var h: Double = 0.0
+    val area: Double
+        get() = w * h
 
-    constructor(r: Rect) {
+    /*constructor(r: Rect) {
         setRect(r.x, r.y, r.w, r.h)
-    }
+    }*/
 
     constructor(x: Double = 0.0, y: Double = 0.0, w: Double = 1.0, h: Double = 1.0) {
         setRect(x, y, w, h)
@@ -32,6 +34,7 @@ class Rect {
         this.w = w
         this.h = h
     }
+
 
     /*fun aspectRatio(): Double {
         return Math.max(w / h, h / w)

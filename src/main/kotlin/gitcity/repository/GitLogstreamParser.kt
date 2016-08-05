@@ -1,10 +1,7 @@
 package gitcity.repository
 
-import gitcity.info
-import gitcity.repository.ChangeLog
-import gitcity.repository.ChangeSet
-import gitcity.repository.FileChange
 import gitcity.GitCityOptions
+import gitcity.info
 import gitcity.trace
 import java.io.BufferedReader
 import java.io.InputStream

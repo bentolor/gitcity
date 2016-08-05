@@ -52,7 +52,7 @@ class TreeModel(val mappable: Mappable) : MapModel {
         if (isLeaf) return mappable.size
         else {
             val sum = children.fold(0.0, { s, tm -> s + tm.mappable.size })
-            //mappable.size = sum
+            mappable.size = sum
             return sum
         }
     }
@@ -88,6 +88,7 @@ class TreeModel(val mappable: Mappable) : MapModel {
         child.parent = this
         children.add(child)
         childItems = null
+        setSums()
     }
 
     fun accept(visitor: TreeModelVisitor) {
