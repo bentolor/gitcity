@@ -37,7 +37,7 @@ class SquarifiedLayout : AbstractMapLayout() {
 
         if (w < h) {
             // height/width
-            while (mid </*=*/ end) {
+            while (mid <= end) {
                 val aspect = normAspect(h, w, a, b)
                 val q = items[mid].size / total
                 if (normAspect(h, w, a, b + q) > aspect) {
@@ -50,7 +50,7 @@ class SquarifiedLayout : AbstractMapLayout() {
             layout(items, mid + 1, end, Rect(x, y + h * b, w, h * (1 - b)))
         } else {
             // width/height
-            while (mid </*=*/ end) {
+            while (mid <= end) {
                 val aspect = normAspect(w, h, a, b)
                 val q = items[mid].size / total
                 if (normAspect(w, h, a, b + q) > aspect) {
