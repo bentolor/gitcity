@@ -11,7 +11,7 @@ package gitcity.mapping.treemap
 /** "Squarified" gitcity.mapping.treemap layout invented by J.J. van Wijk */
 class SquarifiedLayout : AbstractMapLayout() {
 
-    public override fun layout(items: Array<Mappable>, bounds: Rect) {
+    override fun layout(items: Array<Mappable>, bounds: Rect) {
         layout(sortDescending(items), 0, items.size - 1, bounds)
     }
 

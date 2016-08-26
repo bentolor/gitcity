@@ -1,10 +1,7 @@
 package gitcity.mapping.building
 
 import gitcity.ChangeLogAnalysis
-import gitcity.mapping.treemap.Rect
-import gitcity.mapping.treemap.SquarifiedLayout
-import gitcity.mapping.treemap.TreeModel
-import gitcity.mapping.treemap.TreeModelVisitor
+import gitcity.mapping.treemap.*
 import gitcity.repository.RepoFile
 import gitcity.trace
 import gitcity.warn
@@ -38,7 +35,7 @@ class BuildingMapper(analysis: ChangeLogAnalysis) {
         treeMap.assertFileSizeSums()
         treeMap.assertSizes()
 
-        treeMap.layout(SquarifiedLayout(), Rect(w = worldLength, h = worldLength))
+        treeMap.layout(/*SquarifiedLayout()*/SliceLayout(), Rect(w = worldLength, h = worldLength))
         treeMap.accept(AssertRelativeSizeVisitor())
     }
 

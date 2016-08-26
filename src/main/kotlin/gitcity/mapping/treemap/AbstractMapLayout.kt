@@ -7,7 +7,7 @@ package gitcity.mapping.treemap
 abstract class AbstractMapLayout : MapLayout {
 
     /** Subclasses implement this method themselves.  */
-    protected abstract fun layout(items: Array<Mappable>, bounds: Rect)
+    override abstract fun layout(items: Array<Mappable>, bounds: Rect)
 
     override fun layout(model: MapModel, bounds: Rect) {
         layout(model.items, bounds)
@@ -37,9 +37,9 @@ abstract class AbstractMapLayout : MapLayout {
 
         // Flags for type of rectangle division
         // and sort orders.
-        internal val VERTICAL = 0
-        internal val HORIZONTAL = 1
-        internal val ASCENDING = 0
+        val VERTICAL = 0
+        val HORIZONTAL = 1
+        val ASCENDING = 0
 
         private fun totalSize(items: Array<Mappable>, start: Int, end: Int): Double {
             var sum = 0.0

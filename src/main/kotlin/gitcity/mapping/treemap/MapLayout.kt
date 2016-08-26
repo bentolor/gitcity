@@ -9,4 +9,6 @@ interface MapLayout {
      * @param bounds The boundsing rectangle for the layout.
      */
     fun layout(model: MapModel, bounds: Rect)
+
+    fun layout(items: Array<Mappable>, bounds: Rect)
 }

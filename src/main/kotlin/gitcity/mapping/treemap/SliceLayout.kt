@@ -13,7 +13,7 @@ package gitcity.mapping.treemap
  */
 class SliceLayout constructor(private val orientation: Int = SliceLayout.ALTERNATE) : AbstractMapLayout() {
 
-    public override fun layout(items: Array<Mappable>, bounds: Rect) {
+    override fun layout(items: Array<Mappable>, bounds: Rect) {
         if (items.size == 0) {
             return
         }
@@ -29,8 +29,8 @@ class SliceLayout constructor(private val orientation: Int = SliceLayout.ALTERNA
 
     companion object {
 
-        private val BEST = 2
-        private val ALTERNATE = 3
+        val BEST = 2
+        val ALTERNATE = 3
 
         fun layoutBest(items: Array<Mappable>, start: Int, end: Int, bounds: Rect, order: Int = ASCENDING) {
             AbstractMapLayout.sliceLayout(items, start, end, bounds,
