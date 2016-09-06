@@ -1,4 +1,4 @@
-package altimpl
+package gitcity.mapping.squarified
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -9,8 +9,8 @@ import org.junit.Test
  */
 class LayoutTestAltImpl() {
 
-    private val mapOfThree = arrayOf(TreeNode(50.0), TreeNode(25.0), TreeNode(25.0))
-    private val mapOfFour = arrayOf(TreeNode(55.0), TreeNode(15.0), TreeNode(15.0), TreeNode(15.0))
+    private val mapOfThree = listOf(TreeNode(50.0), TreeNode(25.0), TreeNode(25.0))
+    private val mapOfFour = listOf(TreeNode(55.0), TreeNode(15.0), TreeNode(15.0), TreeNode(15.0))
 
     /**
      * Three segments, 2:1:1 on an area of 100. Expecting 50,25,25 sized tiles.
@@ -19,7 +19,7 @@ class LayoutTestAltImpl() {
     fun testOneToOneMapping() {
         val root = TreeNode(mapOfThree)
         SquarifiedLayout(0.0, 0.0, 5.0, 20.0).layout(root)
-        val sum = root.childNodes.sumByDouble { it.width * it.height }
+        val sum = root.childNodes?.sumByDouble { it.width * it.height } ?: throw IllegalStateException("Nodes?")
         assertEquals(100.0, sum, 0.01)
         with(mapOfThree[0]) {
             assertEquals(50.0, area, 0.01)

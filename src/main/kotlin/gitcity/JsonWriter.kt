@@ -31,8 +31,8 @@ class JsonWriter(private val buildingMapper: BuildingMapper) {
             val buildingLength = mi.bounds.h //- 2 * STREET_WIDTH
             val buildingHeight = mi.size / (buildingLength * buildingWidth)
 
-            val correctedArea = buildingWidth * buildingHeight * buildingMapper.oneLineArea
-            val lc = mi.repoFile.lineCount
+//            val correctedArea = buildingWidth * buildingHeight * buildingMapper.oneLineArea
+//            val lc = mi.repoFile.lineCount
 //            if (Math.round(correctedArea - lc) > 0 )
 //                throw IllegalStateException("Nope!")
 
