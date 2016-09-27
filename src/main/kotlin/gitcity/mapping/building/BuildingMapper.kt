@@ -43,34 +43,22 @@ class BuildingMapper(analysis: ChangeLogAnalysis) {
         override fun visit(model: TreeNode) {
             val file = model.payload as RepoFile
             val lineCount = file.lineCount
-            val areaRatio = worldLength * worldLength / model.area
+
+            val areaRatio = worldLength * worldLength / (model.width * model.height)
             val locRatio = totalLOC / lineCount
+
             val absDiff = Math.abs(areaRatio - locRatio)
             if (absDiff > 0.0000001)
                 warn("LOC to Area ratio mismatch: ${file.name} LOC: $locRatio vs. AREA: $areaRatio -- Lines: $lineCount ${model
-                        .width}x${model.height} = ${model.area} ")
-            else
-                trace("LOC to Area ratio: ${file.name} LOC: $locRatio vs. AREA: $areaRatio")
+                        .width}x${model.height} = ${model.width * model.height} ")
         }
     }
-    /*inner class AssertRelativeSizeVisitor : TreeModelVisitor {
-        override fun visit(model: TreeModel) {
-            val file = (model.mappable as MappableRepoFile).repoFile
-            val lineCount = file.lineCount
-            val areaRatio = worldLength * worldLength / model.mappable.bounds.area
-            val locRatio = totalLOC / lineCount
-            if (Math.abs(areaRatio - locRatio) > 0.0000001)
-                warn("LOC to Area ratio mismatch: ${file.name} LOC: $locRatio vs. AREA: $areaRatio")
-        }
-    }*/
-
     /** Calculate desired building area based on line count (building volume). */
     fun dimBuildingArea(file: RepoFile): Double {
         val volume = file.lineCount.toDouble()
 
         // Height assuming a cubic with 12 equals sides
-        //val height = Math.pow(volume, 1.0 / 3)
-        val height = 1.0
+        val height = 1.0 // pow(volume, 1.0 / 3)
 
         // We have a semi-random maximum height per building
         //val maxHeight = Math.ceil(BUILDING_MAX_HEIGHT - Math.floor(Math.random() * BUILDING_MAX_HEIGHT_VARIANCE))

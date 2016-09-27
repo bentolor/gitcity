@@ -26,9 +26,9 @@ class SquarifiedLayout(private val worldOffsetX: Double,
             while (end != nodeChilds.size) {
                 squarify(node, nodeChilds)            //squarify function finds the squarified treemap of this node
             }
-            for (i in nodeChilds.indices ) {
+            /*for (i in nodeChilds.indices ) {
                 preorder(nodeChilds[i])
-            }
+            }*/
         }
         //else Leaf node!
     }
@@ -60,15 +60,15 @@ class SquarifiedLayout(private val worldOffsetX: Double,
             if (currentIndex != (node.childNodes?.size ?: 0) - 1) {                      //as last item has to placed in the remaining area
                 var totalArea = 0.0
                 for (t in currentIndex..end) {
-                    totalArea += nodeChildren[t].area
+                    totalArea += nodeChildren[t].targetArea
                 }
                 for (i in currentIndex..end) {
                     if (orientation == Orientation.PORTRAIT) {
                         nodeChildren[i].width = totalArea / currentHeight
-                        nodeChildren[i].height = nodeChildren[i].area / nodeChildren[i].width
+                        nodeChildren[i].height = nodeChildren[i].targetArea / nodeChildren[i].width
                     } else {
                         nodeChildren[i].height = totalArea / currentWidth
-                        nodeChildren[i].width = nodeChildren[i].area / nodeChildren[i].height
+                        nodeChildren[i].width = nodeChildren[i].targetArea / nodeChildren[i].height
                     }
                 }
                 //finding aspect ratio of last item
@@ -157,14 +157,60 @@ class SquarifiedLayout(private val worldOffsetX: Double,
     }
 
     fun layout(root: TreeNode): TreeNode {
-
         root.height = worldHeight
         root.width = worldWidth
+        root.targetArea = worldHeight * worldWidth
 
-        if (root.childNodes?.size ?: 0 > 0) {
+        return layoutInternal(root)
+    }
+
+    private fun layoutInternal(root: TreeNode): TreeNode {
+        val childNodes = root.childNodes
+        if (childNodes != null && childNodes.size > 0) {
+            layoutBest(root)
             preorder(root)
+            for (child in childNodes)
+                layoutInternal(child)
         }
+
         return root
+    }
+
+    private fun layoutBest(root: TreeNode) {
+        sliceLayout(root, if (root.width > root.height) Orientation.LANDSCAPE else Orientation.PORTRAIT)
+    }
+
+    private fun sliceLayout(root: TreeNode, orientation: Orientation, ascendingOrder: Boolean = true) {
+        var a = 0.0
+
+        val childNodes = root.childNodes
+        if (childNodes != null) {
+            for (child in childNodes) {
+                val percentage = child.payloadSize / root.payloadSize
+                child.targetArea = percentage * root.targetArea
+
+                if (orientation == Orientation.PORTRAIT) {
+                    child.x = root.x
+                    child.width = root.width
+                    if (ascendingOrder) {
+                        child.y = root.y + root.height * a
+                    } else {
+                        child.y = root.y + root.height * (1.0 - a - percentage)
+                    }
+                    child.height = root.height * percentage
+                } else {
+                    if (ascendingOrder) {
+                        child.x = root.x + root.width * a
+                    } else {
+                        child.x = root.x + root.width * (1.0 - a - percentage)
+                    }
+                    child.width = root.width * percentage
+                    child.y = root.y
+                    child.height = root.height
+                }
+                a += percentage
+            }
+        }
     }
 
 }

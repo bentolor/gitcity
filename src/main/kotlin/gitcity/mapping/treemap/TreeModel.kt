@@ -8,8 +8,6 @@
 
 package gitcity.mapping.treemap
 
-import gitcity.mapping.building.MappableRepoFile
-
 /**
  * An implementation of MapModel that represents  a hierarchical structure. It currently cannot  handle structural changes to the tree,
  * since it caches a fair amount of information.
@@ -19,6 +17,7 @@ class TreeModel(val mappable: Mappable) : MapModel {
     val children = mutableListOf<TreeModel>()
     val isLeaf: Boolean
         get() = children.isEmpty()
+
     override val items: Array<Mappable>
         get() {
             val ci = childItems
@@ -57,22 +56,6 @@ class TreeModel(val mappable: Mappable) : MapModel {
         }
     }
 
-
-    fun assertFileSizeSums() {
-        if (isLeaf) return
-        val sum = children.fold(0, { s, tm -> s + (tm.mappable as MappableRepoFile).repoFile.lineCount })
-        if (sum != (mappable as MappableRepoFile).repoFile.lineCount)
-            throw IllegalStateException("Line count mismatch")
-        children.forEach { it.assertFileSizeSums() }
-    }
-
-    fun assertSizes() {
-        children.forEach { it.assertSizes() }
-        val sum = children.fold(0.0, { s, tm -> s + tm.mappable.size })
-        if (!isLeaf && Math.abs(sum - mappable.size) > 0.000000001)
-            throw IllegalStateException("Size mismatch")
-    }
-
     fun layout(tiling: MapLayout, bounds: Rect) {
         mappable.bounds = bounds
         if (children.isEmpty()) {
@@ -80,7 +63,7 @@ class TreeModel(val mappable: Mappable) : MapModel {
         }
         tiling.layout(this, bounds)
         for (i in children.size - 1 downTo 0) {
-            children[i].layout(tiling)
+            children[i].layout(tiling, mappable.bounds)
         }
     }
 
@@ -101,10 +84,6 @@ class TreeModel(val mappable: Mappable) : MapModel {
     private fun depth(): Int {
         val p = this.parent
         return if (p == null) 0 else p.depth() + 1
-    }
-
-    private fun layout(tiling: MapLayout) {
-        layout(tiling, mappable.bounds)
     }
 
 }

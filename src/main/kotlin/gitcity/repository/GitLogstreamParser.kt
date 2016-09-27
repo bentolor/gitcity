@@ -26,7 +26,7 @@ class GitLogstreamParser(private val opts: GitCityOptions, private val gitLogStr
 
                 val fileChanges = ArrayList<FileChange>()
                 var fileChangeStat: String? = reader.readLine()
-                while (fileChangeStat != null && !fileChangeStat.isBlank()) {
+                while (fileChangeStat != null && !fileChangeStat.isBlank() && !isHash(fileChangeStat)) {
                     val fileChange = parseFilechange(fileChangeStat)
                     if (fileChange != null) fileChanges.add(fileChange)
                     fileChangeStat = reader.readLine()
@@ -36,7 +36,10 @@ class GitLogstreamParser(private val opts: GitCityOptions, private val gitLogStr
                 changeSets.add(0, ChangeSet(sha1, timeStamp, author, subject, fileChanges))
 
                 // prepare next change
-                changeHeader = reader.readLine()
+                if (isHash(fileChangeStat))  // was this an empty commit?
+                    changeHeader = fileChangeStat
+                else
+                    changeHeader = reader.readLine()
             }
         }
 
@@ -49,6 +52,8 @@ class GitLogstreamParser(private val opts: GitCityOptions, private val gitLogStr
             throw IllegalArgumentException("Invalid commit hash '$sha1'")
         return sha1
     }
+
+    private fun isHash(possibleSha1: String?): Boolean  =  possibleSha1?.matches("""^[\da-f]{40}$""".toRegex()) ?: false
 
     private fun parseTimestamp(timestamp: String?): LocalDateTime {
         if (timestamp == null || !timestamp.matches("""^\d+$""".toRegex()))

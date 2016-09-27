@@ -23,17 +23,14 @@ class LayoutTestAltImpl() {
         val root = TreeNode(mapOfThree)
         SquarifiedLayout(0.0, 0.0, 5.0 * factor, 20.0).layout(root)
         val sum = root.childNodes?.sumByDouble { it.width * it.height } ?: throw IllegalStateException("Nodes?")
-        assertEquals(100.0, sum, 0.01)
+        assertEquals(100.0 * factor, sum, 0.01)
         with(mapOfThree[0]) {
-            assertEquals(50.0 * factor, area, 0.01)
             assertEquals(50.0 * factor, width * height, 0.01)
         }
         with(mapOfThree[1]) {
-            assertEquals(25.0 * factor, area, 0.01)
             assertEquals(25.0 * factor, width * height, 0.01)
         }
         with(mapOfThree[2]) {
-            assertEquals(25.0 * factor, area, 0.01)
             assertEquals(25.0 * factor, width * height, 0.01)
         }
     }
@@ -48,24 +45,19 @@ class LayoutTestAltImpl() {
         val sum = root.childNodes?.sumByDouble { it.width * it.height } ?: throw IllegalStateException("Nodes?")
         assertEquals(100.0, sum, 0.01)
         with(nestedMapOfThree[0]) {
-            assertEquals(50.0, area, 0.01)
             assertEquals(50.0, width * height, 0.01)
         }
         with(nestedMapOfThree[1]) {
-            assertEquals(25.0, area, 0.01)
             assertEquals(25.0, width * height, 0.01)
         }
         with(nestedMapOfThree[2]) {
-            assertEquals(25.0, area, 0.01)
             assertEquals(25.0, width * height, 0.01)
         }
         assertNotNull(nestedMapOfThree[2].childNodes)
         with(nestedMapOfThree[2].childNodes!![1]) {
-            assertEquals(12.5, area, 0.01)
             assertEquals(12.5, width * height, 0.01)
         }
         with(nestedMapOfThree[2].childNodes!![0]) {
-            assertEquals(12.5, area, 0.01)
             assertEquals(12.5, width * height, 0.01)
         }
     }
@@ -82,7 +74,6 @@ class LayoutTestAltImpl() {
         mapOfFour.indices.forEach { i ->
             with(mapOfFour[i]) {
                 val tileSize = if (i == 0) 55.0 else 15.0
-                assertEquals(tileSize, area, 0.01)
                 assertEquals(tileSize, width * height, 0.01)
             }
         }
