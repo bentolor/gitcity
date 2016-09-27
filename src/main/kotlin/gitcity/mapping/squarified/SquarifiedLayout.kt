@@ -14,14 +14,19 @@ class SquarifiedLayout(private val worldOffsetX: Double,
     private var currentHeight: Double = 0.toDouble()
 
     private fun preorder(node: TreeNode) {        //To traverse the tree in preorder way of traversal
+        previousIndex = 0
+        currentIndex = 0
+        end = 0
+        previousOrientation = calculateOrientation(worldWidth, worldHeight)
+
         val nodeChilds = node.childNodes
-        if (nodeChilds != null) {
+        if (nodeChilds != null && !node.childNodesProcessed) {
             currentWidth = node.width
             currentHeight = node.height
             while (end != nodeChilds.size) {
                 squarify(node, nodeChilds)            //squarify function finds the squarified treemap of this node
             }
-            for (i in 0..nodeChilds.size - 1) {
+            for (i in nodeChilds.indices ) {
                 preorder(nodeChilds[i])
             }
         }
@@ -70,9 +75,10 @@ class SquarifiedLayout(private val worldOffsetX: Double,
                 nodeChildren[end].aspectLast = calculateAspectRatio(nodeChildren[end].height, nodeChildren[end].width)
             }
             //here again last item has no need to be compared
-            val lastNode = currentIndex != node.childNodesCount - 1
-            val lastInSegment = end != node.childNodesCount - 1
-            if (compareAspect(nodeChildren, end, aspectCurr) && lastNode && lastInSegment) {
+            val lastNode = currentIndex == node.childNodesCount - 1
+            val lastInSegment = end == node.childNodesCount - 1
+            if (compareAspect(nodeChildren, end, aspectCurr) && !lastNode && !lastInSegment) {
+                //here again last item has no need to be compared
                 //Aspect ratio is closer to 1 ! Adding next item.....
                 aspectCurr = nodeChildren[end].aspectLast
                 for (i in currentIndex..end) {
@@ -151,31 +157,11 @@ class SquarifiedLayout(private val worldOffsetX: Double,
     }
 
     fun layout(root: TreeNode): TreeNode {
-        previousIndex = 0
-        currentIndex = 0
-        end = 0
 
-        root.parentNode = null
         root.height = worldHeight
         root.width = worldWidth
-        previousOrientation = calculateOrientation(worldWidth, worldHeight)
 
-        val number = root.childNodesCount
-
-        var totalSum = 0.0
-        val childNodes = root.childNodes
-        if (childNodes != null) {
-            for (j in 0..root.childNodesCount - 1) {
-                totalSum += childNodes[j].area
-            }
-            val ratio = root.area / totalSum
-            for (i in 0..number - 1) {
-                childNodes[i].area = childNodes[i].area * ratio
-                childNodes[i].parentNode = root
-                childNodes[i].childNodes = null
-                childNodes[i] = childNodes[i]
-            }
-
+        if (root.childNodes?.size ?: 0 > 0) {
             preorder(root)
         }
         return root

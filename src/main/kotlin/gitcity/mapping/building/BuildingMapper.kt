@@ -1,7 +1,9 @@
 package gitcity.mapping.building
 
 import gitcity.ChangeLogAnalysis
-import gitcity.mapping.treemap.*
+import gitcity.mapping.squarified.SquarifiedLayout
+import gitcity.mapping.squarified.TreeNode
+import gitcity.mapping.squarified.TreeNodeVisitor
 import gitcity.repository.RepoFile
 import gitcity.trace
 import gitcity.warn
@@ -13,11 +15,9 @@ import gitcity.warn
  */
 class BuildingMapper(analysis: ChangeLogAnalysis) {
 
-    val treeMap: TreeModel
+    val treeMap: TreeNode
     val tree: RepoFile
 
-    private val BUILDING_MAX_HEIGHT = 120
-    private val BUILDING_MAX_HEIGHT_VARIANCE = 20
     private val BUILDING_AVG_HEIGHT = 20
 
     val worldLength: Double
@@ -31,15 +31,29 @@ class BuildingMapper(analysis: ChangeLogAnalysis) {
         worldLength = dimWorldLength(totalLOC)
         oneLineArea = BUILDING_AVG_HEIGHT * worldLength * worldLength / totalLOC
 
-        treeMap = tree.toTreeModel(this)
-        treeMap.assertFileSizeSums()
+        treeMap = tree.toTreeNode(this)
+        /*treeMap.assertFileSizeSums()
         treeMap.assertSizes()
-
-        treeMap.layout(/*SquarifiedLayout()*/SliceLayout(), Rect(w = worldLength, h = worldLength))
+        treeMap.layout(/*SquarifiedLayout()*/SliceLayout(), Rect(w = worldLength, h = worldLength))*/
+        SquarifiedLayout(-worldLength / 2.0, -worldLength / 2.0, worldLength, worldLength).layout(treeMap)
         treeMap.accept(AssertRelativeSizeVisitor())
     }
 
-    inner class AssertRelativeSizeVisitor : TreeModelVisitor {
+    inner class AssertRelativeSizeVisitor : TreeNodeVisitor {
+        override fun visit(model: TreeNode) {
+            val file = model.payload as RepoFile
+            val lineCount = file.lineCount
+            val areaRatio = worldLength * worldLength / model.area
+            val locRatio = totalLOC / lineCount
+            val absDiff = Math.abs(areaRatio - locRatio)
+            if (absDiff > 0.0000001)
+                warn("LOC to Area ratio mismatch: ${file.name} LOC: $locRatio vs. AREA: $areaRatio -- Lines: $lineCount ${model
+                        .width}x${model.height} = ${model.area} ")
+            else
+                trace("LOC to Area ratio: ${file.name} LOC: $locRatio vs. AREA: $areaRatio")
+        }
+    }
+    /*inner class AssertRelativeSizeVisitor : TreeModelVisitor {
         override fun visit(model: TreeModel) {
             val file = (model.mappable as MappableRepoFile).repoFile
             val lineCount = file.lineCount
@@ -48,14 +62,15 @@ class BuildingMapper(analysis: ChangeLogAnalysis) {
             if (Math.abs(areaRatio - locRatio) > 0.0000001)
                 warn("LOC to Area ratio mismatch: ${file.name} LOC: $locRatio vs. AREA: $areaRatio")
         }
-    }
+    }*/
 
     /** Calculate desired building area based on line count (building volume). */
     fun dimBuildingArea(file: RepoFile): Double {
         val volume = file.lineCount.toDouble()
 
         // Height assuming a cubic with 12 equals sides
-        val height = Math.pow(volume, 1.0 / 3)
+        //val height = Math.pow(volume, 1.0 / 3)
+        val height = 1.0
 
         // We have a semi-random maximum height per building
         //val maxHeight = Math.ceil(BUILDING_MAX_HEIGHT - Math.floor(Math.random() * BUILDING_MAX_HEIGHT_VARIANCE))
@@ -71,7 +86,7 @@ class BuildingMapper(analysis: ChangeLogAnalysis) {
         //area = pow(sqrt(area) + 2 * STREET_WIDTH, 2.0)
 
         if (file.isLeaf) {
-            trace("${file.name}[${file.lineCount}] -> ${Math.round(area)} x ${Math.round(height)}")
+            trace("\t${file.name}[${file.lineCount}] -> ${Math.round(area)} x ${Math.round(height)}")
         }
 
         return area
