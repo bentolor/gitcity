@@ -6,55 +6,50 @@ import gitcity.mapping.treemap.SquarifiedLayout
 import gitcity.mapping.treemap.TreeModel
 import gitcity.mapping.treemap.TreeModelVisitor
 import gitcity.repository.RepoFile
-import gitcity.warn
 
 /**
  * Various algorithms, settings and heuristics to influence the placement, sizing and other visual properties of the "buildings" in
  * GitCity representing the files.
  * @author Benjamin Schmid <benjamin.schmid@exxcellent.de>
  */
-class BuildingMapper(analysis: ChangeLogAnalysis, val worldLength: Double = 1000.0) {
+class BuildingMapper(analysis: ChangeLogAnalysis, worldLength: Double = 1000.0) {
 
     val treeMap: TreeModel
     val tree: RepoFile
 
-    val totalLOC: Double
+    val sourceVolume: Double
+    val sourceArea: Double
 
     init {
         tree = analysis.epochs.last().fileTree
-        treeMap = tree.toTreeModel(this)
 
-        totalLOC = tree.lineCount.toDouble()
+        sourceVolume = tree.lineCount.toDouble()
+        sourceArea = sourceVolume / Math.pow(sourceVolume, 1.0 / 3)
+
+        treeMap = tree.toTreeModel(this)
 
         val worldRect = Rect(-worldLength / 2, -worldLength / 2, worldLength, worldLength)
         treeMap.mappable.bounds = worldRect
 
         treeMap.layout(SquarifiedLayout())
-        treeMap.accept(AssertRelativeSizeVisitor())
+
+        treeMap.accept(PostProcessing())
     }
 
-    inner class AssertRelativeSizeVisitor : TreeModelVisitor {
-        val worldArea = Math.pow(worldLength, 2.0)
-
+    inner class PostProcessing: TreeModelVisitor {
         override fun visit(model: TreeModel) {
-            val file = (model.mappable as MappableRepoFile).repoFile
-
-            val lineCount = file.lineCount
-            val locRatio = totalLOC / lineCount
-
-            val areaRatio = worldArea / model.mappable.bounds.area
-
-            if (Math.abs(areaRatio - locRatio) > 0.0000001)
-                warn("LOC to Area ratio mismatch: ${file.name} LOC: $locRatio vs. AREA: $areaRatio")
+            val mappableRepoFile = model.mappable as MappableRepoFile
+            val props = mappableRepoFile.buildingProperties
+            props.height = Math.pow(props.area, 0.5) * 3
         }
     }
 
     /** Calculate desired building area based on line count (building volume). */
-    fun dimBuildingArea(file: RepoFile): Double {
+    fun dimBuilding(file: RepoFile): BuildingProperties {
         val volume = file.lineCount.toDouble()
 
         // Height assuming a cubic with 12 equals sides
-        val height = 1.0 // Math.pow(volume, 1.0 / 3)
+        val height = Math.pow(volume, 1.0 / 3)
 
         // We have a semi-random maximum height per building
         //val maxHeight = Math.ceil(BUILDING_MAX_HEIGHT - Math.floor(Math.random() * BUILDING_MAX_HEIGHT_VARIANCE))
@@ -73,7 +68,10 @@ class BuildingMapper(analysis: ChangeLogAnalysis, val worldLength: Double = 1000
         //    trace("\t${file.name}[${file.lineCount}] -> ${Math.round(area)} x ${Math.round(height)}")
         //}
 
-        return area
+        val relativeVolume = volume / sourceVolume
+        val relativeArea = area / sourceArea
+
+        return BuildingProperties(area, height, relativeArea, relativeVolume)
     }
 
 }

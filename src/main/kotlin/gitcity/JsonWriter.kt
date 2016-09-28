@@ -30,7 +30,7 @@ class JsonWriter(private val buildingMapper: BuildingMapper) {
             // Area is surrounding street gap + building area. Recover real building sizes
             val buildingWidth = mi.bounds.w //- 2 * STREET_WIDTH
             val buildingLength = mi.bounds.h //- 2 * STREET_WIDTH
-            val buildingHeight = mi.size / (buildingLength * buildingWidth)
+            val buildingHeight = mi.buildingProperties.height
 
 //            val correctedArea = buildingWidth * buildingHeight * buildingMapper.oneLineArea
 //            val lc = mi.repoFile.lineCount
