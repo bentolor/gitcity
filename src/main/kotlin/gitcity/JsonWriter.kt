@@ -37,16 +37,16 @@ class JsonWriter(private val buildingMapper: BuildingMapper) {
 //            if (Math.round(correctedArea - lc) > 0 )
 //                throw IllegalStateException("Nope!")
 
-            writer.append("{" +
+            writer.append("\n\t{" +
                     // The client expects x/y in the center of the cube
                     "\"x\": ${mi.bounds.x + 0.5 * mi.bounds.w}," +
                     "\"z\": ${mi.bounds.y + 0.5 * mi.bounds.h}," +
                     "\"w\": $buildingWidth," +
                     "\"l\": $buildingLength," +
                     "\"h\": $buildingHeight," +
-                    "\"v\": ${buildingHeight * buildingWidth * buildingLength}," +
-                    "\"s\": ${mi.repoFile.lineCount}," +
-                    "\"f\": \"${mi.repoFile.name}\"" +
+                    // "\"v\": ${buildingHeight * buildingWidth * buildingLength}," +
+                    "\"f\": { \"lc\": ${mi.repoFile.lineCount}," +
+                    "\"n\": \"${mi.repoFile.name}\" } " +
                     "}")
         }
     }

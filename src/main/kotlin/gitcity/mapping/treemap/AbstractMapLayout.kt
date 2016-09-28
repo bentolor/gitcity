@@ -33,12 +33,13 @@ abstract class AbstractMapLayout : MapLayout {
         return s
     }
 
+    enum class Orientation {  VERTICAL, HORIZONTAL  }
+    enum class Order {  ASCENDING, DESCENDING  }
+
     companion object {
 
         // Flags for type of rectangle division
         // and sort orders.
-        val VERTICAL = 0
-        val HORIZONTAL = 1
         val ASCENDING = 0
 
         private fun totalSize(items: Array<Mappable>, start: Int, end: Int): Double {
@@ -49,10 +50,11 @@ abstract class AbstractMapLayout : MapLayout {
             return sum
         }
 
-        internal fun sliceLayout(items: Array<Mappable>, start: Int, end: Int, bounds: Rect, orientation: Int, order: Int = ASCENDING) {
+        internal fun sliceLayout(items: Array<Mappable>, start: Int, end: Int, bounds: Rect,
+                                 orientation: Orientation, order: Order = Order.ASCENDING) {
             val total = totalSize(items, start, end)
             var a = 0.0
-            val vertical = orientation == VERTICAL
+            val vertical = orientation == Orientation.VERTICAL
 
             for (i in start..end) {
                 val r = Rect()
@@ -60,14 +62,14 @@ abstract class AbstractMapLayout : MapLayout {
                 if (vertical) {
                     r.x = bounds.x
                     r.w = bounds.w
-                    if (order == ASCENDING) {
+                    if (order == Order.ASCENDING) {
                         r.y = bounds.y + bounds.h * a
                     } else {
                         r.y = bounds.y + bounds.h * (1.0 - a - b)
                     }
                     r.h = bounds.h * b
                 } else {
-                    if (order == ASCENDING) {
+                    if (order == Order.ASCENDING) {
                         r.x = bounds.x + bounds.w * a
                     } else {
                         r.x = bounds.x + bounds.w * (1.0 - a - b)

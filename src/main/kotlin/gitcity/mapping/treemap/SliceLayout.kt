@@ -11,35 +11,17 @@ package gitcity.mapping.treemap
 /**
  * The original slice-and-dice layout for treemaps.
  */
-class SliceLayout constructor(private val orientation: Int = SliceLayout.ALTERNATE) : AbstractMapLayout() {
+class SliceLayout constructor() : AbstractMapLayout() {
 
     override fun layout(items: Array<Mappable>, bounds: Rect) {
-        if (items.size == 0) {
-            return
-        }
-        val o = orientation
-        if (o == BEST) {
+        if (items.size > 0) {
             layoutBest(items, 0, items.size - 1, bounds)
-        } else if (o == ALTERNATE) {
-            layout(items, bounds, items[0].depth % 2)
-        } else {
-            layout(items, bounds, o)
         }
     }
 
-    companion object {
-
-        val BEST = 2
-        val ALTERNATE = 3
-
-        fun layoutBest(items: Array<Mappable>, start: Int, end: Int, bounds: Rect, order: Int = ASCENDING) {
-            AbstractMapLayout.sliceLayout(items, start, end, bounds,
-                    if (bounds.w > bounds.h) AbstractMapLayout.HORIZONTAL else AbstractMapLayout.VERTICAL, order)
-        }
-
-        private fun layout(items: Array<Mappable>, bounds: Rect, orientation: Int) {
-            AbstractMapLayout.sliceLayout(items, 0, items.size - 1, bounds, orientation)
-        }
+    fun layoutBest(items: Array<Mappable>, start: Int, end: Int, bounds: Rect, order: Order = Order.ASCENDING) {
+        val bestOrientation = if (bounds.w > bounds.h) Orientation.HORIZONTAL else Orientation.VERTICAL
+        sliceLayout(items, start, end, bounds, bestOrientation, order)
     }
 
 }

@@ -4,7 +4,11 @@ import gitcity.mapping.treemap.TreeModel
 import gitcity.repository.RepoFile
 
 fun RepoFile.toTreeModel(buildingMapper: BuildingMapper) : TreeModel {
-    val treeModel = TreeModel(MappableRepoFile(this, { it -> buildingMapper.dimBuildingArea(it) }))
+
+    val relativeAreaSize = buildingMapper.dimBuildingArea(this)
+    val mappable = MappableRepoFile(this, relativeAreaSize)
+
+    val treeModel = TreeModel(mappable)
 
     val fileChildren = this.children
     if (fileChildren != null) {

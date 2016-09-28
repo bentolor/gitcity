@@ -28,7 +28,6 @@ class TreeModel(val mappable: Mappable) : MapModel {
                 val cil = mutableListOf<Mappable>()
                 for (i in 0..n - 1) {
                     val c = children[i].mappable
-                    c.depth = 1 + depth()
                     cil.add(c)
                 }
                 childItems = cil.toTypedArray()

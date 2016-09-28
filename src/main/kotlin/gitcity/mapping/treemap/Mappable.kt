@@ -14,8 +14,4 @@ interface Mappable {
     var size: Double
     /** The bounding rectangle of the item in the map. */
     var bounds: Rect
-    /** The sort order of the item. */
-    var order: Int
-    /** The depth in hierarchy. */
-    var depth: Int
 }

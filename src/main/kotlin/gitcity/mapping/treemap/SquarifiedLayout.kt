@@ -21,7 +21,7 @@ class SquarifiedLayout : AbstractMapLayout() {
         }
 
         if (end - start < 2) {
-            SliceLayout.layoutBest(items, start, end, bounds)
+            SliceLayout().layoutBest(items, start, end, bounds)
             return
         }
 
@@ -46,7 +46,7 @@ class SquarifiedLayout : AbstractMapLayout() {
                 mid++
                 b += q
             }
-            SliceLayout.layoutBest(items, start, mid, Rect(x, y, w, h * b))
+            SliceLayout().layoutBest(items, start, mid, Rect(x, y, w, h * b))
             layout(items, mid + 1, end, Rect(x, y + h * b, w, h * (1 - b)))
         } else {
             // width/height
@@ -59,7 +59,7 @@ class SquarifiedLayout : AbstractMapLayout() {
                 mid++
                 b += q
             }
-            SliceLayout.layoutBest(items, start, mid, Rect(x, y, w * b, h))
+            SliceLayout().layoutBest(items, start, mid, Rect(x, y, w * b, h))
             layout(items, mid + 1, end, Rect(x + w * b, y, w * (1 - b), h))
         }
 

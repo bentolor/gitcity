@@ -9,8 +9,6 @@
 package gitcity.mapping.treemap
 
 /** A simple implementation of the Mappable interface.  */
-open class MapItem constructor(override var size: Double,
-                               override var order: Int = 0) : Mappable {
+open class MapItem constructor(override var size: Double) : Mappable {
     override var bounds: Rect = Rect(0.0, 0.0, 0.0, 0.0)
-    override var depth: Int = 0
 }

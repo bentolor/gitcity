@@ -60,7 +60,6 @@ class LayoutTest(private val layouter: MapLayout) {
         fun getLayouts(): Collection<Array<Any>> {
             return listOf(
                     arrayOf<Any>(SliceLayout()),
-                    arrayOf<Any>(SliceLayout(SliceLayout.BEST)),
                     arrayOf<Any>(SquarifiedLayout())
             )
         }

@@ -6,7 +6,6 @@ import gitcity.mapping.treemap.SquarifiedLayout
 import gitcity.mapping.treemap.TreeModel
 import gitcity.mapping.treemap.TreeModelVisitor
 import gitcity.repository.RepoFile
-import gitcity.trace
 import gitcity.warn
 
 /**
@@ -55,7 +54,7 @@ class BuildingMapper(analysis: ChangeLogAnalysis, val worldLength: Double = 1000
         val volume = file.lineCount.toDouble()
 
         // Height assuming a cubic with 12 equals sides
-        val height = 1.0 //  Math.pow(volume, 1.0 / 3)
+        val height = 1.0 // Math.pow(volume, 1.0 / 3)
 
         // We have a semi-random maximum height per building
         //val maxHeight = Math.ceil(BUILDING_MAX_HEIGHT - Math.floor(Math.random() * BUILDING_MAX_HEIGHT_VARIANCE))
@@ -70,9 +69,9 @@ class BuildingMapper(analysis: ChangeLogAnalysis, val worldLength: Double = 1000
         // Add extra "area" for the surrounding street gap
         //area = pow(sqrt(area) + 2 * STREET_WIDTH, 2.0)
 
-        if (file.isLeaf) {
-            trace("\t${file.name}[${file.lineCount}] -> ${Math.round(area)} x ${Math.round(height)}")
-        }
+        //if (file.isLeaf) {
+        //    trace("\t${file.name}[${file.lineCount}] -> ${Math.round(area)} x ${Math.round(height)}")
+        //}
 
         return area
     }
