@@ -43,7 +43,7 @@ class LayoutTest(private val layouter: MapLayout) {
      */
     @Test
     fun testOneToOneMappingOfFour() {
-        layouter.layout(mapOfFour.toTypedArray(), Rect(-5.0, -5.0, 10.0, 10.0))
+        layouter.layout(mapOfFour.toTypedArray(), Rect(-0.0, -0.0, 10.0, 10.0))
         val sum = mapOfFour.sumByDouble { it.bounds.w * it.bounds.h }
         assertEquals(100.0, sum, 0.01)
         mapOfFour.indices.forEach { i ->
@@ -60,8 +60,8 @@ class LayoutTest(private val layouter: MapLayout) {
         fun getLayouts(): Collection<Array<Any>> {
             return listOf(
                     arrayOf<Any>(SliceLayout()),
-                    arrayOf<Any>(SliceLayout(SliceLayout.BEST)) // ,
-                    // BROKEN: arrayOf<Any>(SquarifiedLayout())
+                    arrayOf<Any>(SliceLayout(SliceLayout.BEST)),
+                    arrayOf<Any>(SquarifiedLayout())
             )
         }
     }

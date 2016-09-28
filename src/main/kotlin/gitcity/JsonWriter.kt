@@ -1,9 +1,9 @@
 package gitcity
 
 import gitcity.mapping.building.BuildingMapper
-import gitcity.mapping.squarified.TreeNode
-import gitcity.mapping.squarified.TreeNodeVisitor
-import gitcity.repository.RepoFile
+import gitcity.mapping.building.MappableRepoFile
+import gitcity.mapping.treemap.TreeModel
+import gitcity.mapping.treemap.TreeModelVisitor
 import java.io.OutputStream
 import java.io.Writer
 
@@ -19,36 +19,7 @@ class JsonWriter(private val buildingMapper: BuildingMapper) {
         }
     }
 
-    private inner class LeafNodeJsonWriter(val writer: Writer) : TreeNodeVisitor {
-        var first = true
-
-        override fun visit(model: TreeNode) {
-            if (!model.isLeaf) return
-            if (!first) writer.append(",\n")
-            first = false
-            val file = model.payload as RepoFile
-            // Area is surrounding street gap + building area. Recover real building sizes
-            val buildingWidth = model.width //- 2 * STREET_WIDTH
-            val buildingLength = model.height //- 2 * STREET_WIDTH
-            val buildingHeight = Math.pow(buildingWidth * buildingLength, 0.5)
-
-            writer.append("\t{" +
-                    // The client expects x/y in the center of the cube
-                    "\"x\": ${model.x + 0.5 * model.width}," +
-                    "\"z\": ${model.y + 0.5 * model.height}," +
-                    "\"w\": $buildingWidth ," +
-                    "\"l\": $buildingLength ," +
-                    "\"h\": $buildingHeight ," +
-                    //"\"v\": ${buildingHeight * buildingWidth * buildingLength}," +
-                    "\"s\": ${file.lineCount}," +
-                    "\"f\": \"${file.name}\"" +
-                    "}\n")
-        }
-    }
-
-
-/*
-      private inner class LeafNodeJsonWriter(val writer: Writer) : TreeModelVisitor {
+    private inner class LeafNodeJsonWriter(val writer: Writer) : TreeModelVisitor {
         var first = true
 
         override fun visit(model: TreeModel) {
@@ -79,5 +50,5 @@ class JsonWriter(private val buildingMapper: BuildingMapper) {
                     "}")
         }
     }
-*/
+
 }

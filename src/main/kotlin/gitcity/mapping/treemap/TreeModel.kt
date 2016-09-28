@@ -56,14 +56,13 @@ class TreeModel(val mappable: Mappable) : MapModel {
         }
     }
 
-    fun layout(tiling: MapLayout, bounds: Rect) {
-        mappable.bounds = bounds
+    fun layout(tiling: MapLayout) {
         if (children.isEmpty()) {
             return
         }
-        tiling.layout(this, bounds)
+        tiling.layout(this, this.mappable.bounds)
         for (i in children.size - 1 downTo 0) {
-            children[i].layout(tiling, mappable.bounds)
+            children[i].layout(tiling)
         }
     }
 

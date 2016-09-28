@@ -18,6 +18,4 @@ interface Mappable {
     var order: Int
     /** The depth in hierarchy. */
     var depth: Int
-
-    fun setBounds(x: Double, y: Double, w: Double, h: Double)
 }

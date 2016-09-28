@@ -13,8 +13,4 @@ open class MapItem constructor(override var size: Double,
                                override var order: Int = 0) : Mappable {
     override var bounds: Rect = Rect(0.0, 0.0, 0.0, 0.0)
     override var depth: Int = 0
-
-    override fun setBounds(x: Double, y: Double, w: Double, h: Double) {
-        bounds.setRect(x, y, w, h)
-    }
 }
