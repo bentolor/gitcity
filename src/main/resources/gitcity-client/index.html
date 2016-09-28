@@ -1,6 +1,9 @@
 <!DOCTYPE html>
-<script src='vendor/three.js'></script>
-<script src='vendor/FirstPersonControls.js'></script>
+<head>
+    <meta charset="utf-8"/>
+    <script src='vendor/three.js'></script>
+    <script src='vendor/FirstPersonControls.js'></script>
+</head>
 
 <body style='margin: 0; background-color: #d8e7ff; overflow: hidden;'>
 <script>
@@ -154,7 +157,7 @@
     var planeGeometry = new THREE.PlaneGeometry(2000, 2000);
     var plane = new THREE.Mesh(planeGeometry, material);
     plane.rotation.x = -90 * Math.PI / 180;
-    scene.add(plane);
+//    scene.add(plane);
 
     //////////////////////////////////////////////////////////////////////////////////
     //		comment								//

@@ -4,24 +4,42 @@ import java.util.*
 
 class TreeNode {
 
-    internal var childNodes: MutableList<TreeNode>? = null
-    internal var childNodesProcessed = false
+    var childNodes: MutableList<TreeNode>? = null
+    var childNodesProcessed = false
 
-    internal var width: Double = 0.toDouble()
-    internal var height: Double = 0.toDouble()
-    internal var targetArea: Double = 0.toDouble()
+    var width: Double = 0.toDouble()
+        set(value) {
+            field = if (value >= 0.0) value else throw IllegalStateException("negative value: $value")
+        }
+    var height: Double = 0.toDouble()
+        set(value) {
+            field = if (value >= 0.0) value else throw IllegalStateException("negative value: $value")
+        }
+    var targetArea: Double = 0.toDouble()
+        set(value) {
+            field = if (value >= 0.0) value else throw IllegalStateException("negative value: $value")
+        }
 
     //tmp_width  & tmp_height is used for back-tracking to previous value of width
-    internal var tmp_width: Double = 0.toDouble()
-    internal var tmp_height: Double = 0.toDouble()
-    // last aspect ratio
-    internal var aspectLast: Double = 0.toDouble()
-    //Coordinates of the rectangle of given width and height
-    internal var x: Double = 0.toDouble()
-    internal var y: Double = 0.toDouble()
+    var tmp_width: Double = 0.toDouble()
+        set(value) {
+            field = if (value >= 0.0) value else throw IllegalStateException("negative value: $value")
+        }
+    var tmp_height: Double = 0.toDouble()
+        set(value) {
+            field = if (value >= 0.0) value else throw IllegalStateException("negative value: $value")
+        }
 
-    internal val payload: Any?
-    internal var payloadSize: Double = 0.toDouble()
+    // last aspect ratio
+    var aspectLast: Double = 0.toDouble()
+
+    //Coordinates of the rectangle of given width and height
+    var x: Double = 0.toDouble()
+    var y: Double = 0.toDouble()
+
+    val payload: Any?
+    var payloadSize: Double
+        set(value) { if (value >= 0.0) field = value else throw IllegalStateException("negative value") }
 
     constructor(payloadSize: Double, payload: Any? = null) {
         this.payloadSize = payloadSize
@@ -31,12 +49,13 @@ class TreeNode {
     constructor(childrens: List<TreeNode>, payload: Any? = null) {
         this.childNodes = ArrayList(childrens)
         this.payload = payload
+        var totalSize = 0.0
         if (childNodes != null) {
-            payloadSize = 0.0
             for (childNode in childNodes!!) {
-                payloadSize += childNode.payloadSize
+                totalSize += childNode.payloadSize
             }
         }
+        this.payloadSize = totalSize
     }
 
     internal val childNodesCount: Int

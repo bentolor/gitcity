@@ -1,10 +1,9 @@
 package gitcity.mapping.building
 
 import gitcity.mapping.squarified.TreeNode
-import gitcity.mapping.treemap.TreeModel
 import gitcity.repository.RepoFile
 
-fun RepoFile.toTreeModel(buildingMapper: BuildingMapper) : TreeModel {
+/*fun RepoFile.toTreeModel(buildingMapper: BuildingMapper) : TreeModel {
     val treeModel = TreeModel(MappableRepoFile(this, { it -> buildingMapper.dimBuildingArea(it) }))
 
     val fileChildren = this.children
@@ -17,17 +16,20 @@ fun RepoFile.toTreeModel(buildingMapper: BuildingMapper) : TreeModel {
     }
 
     return treeModel
-}
+}*/
 
 fun RepoFile.toTreeNode(buildingMapper: BuildingMapper) : TreeNode {
-    val size = buildingMapper.dimBuildingArea(this)
-    val treeNode = TreeNode(size, this)
+    val buildingArea = buildingMapper.dimBuildingArea(this)
+    val treeNode = TreeNode(buildingArea, this)
 
     val fileChildren = this.children
-    if (fileChildren != null) {
+    if (fileChildren != null && fileChildren.size > 0) {
+        treeNode.payloadSize = 0.0 // the area is the sum of all childrens
         for (child in fileChildren.values) {
             if (child.lineCount > 0) {   // ignore empty files
-                treeNode.addChild(child.toTreeNode(buildingMapper))
+                val newChild = child.toTreeNode(buildingMapper)
+                treeNode.payloadSize += newChild.payloadSize
+                treeNode.addChild(newChild)
             }
         }
     }

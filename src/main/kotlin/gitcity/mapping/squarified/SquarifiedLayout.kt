@@ -181,10 +181,15 @@ class SquarifiedLayout(private val worldOffsetX: Double,
     private fun sliceLayout(root: TreeNode, orientation: Orientation, ascendingOrder: Boolean = true) {
         var a = 0.0
 
+
+        val totalSize = root.payloadSize
+        var currentSum = 0.0
+
         val childNodes = root.childNodes
         if (childNodes != null) {
             for (child in childNodes) {
                 val percentage = child.payloadSize / root.payloadSize
+                currentSum += child.payloadSize
                 child.targetArea = percentage * root.targetArea
 
                 if (orientation == Orientation.PORTRAIT) {
@@ -208,6 +213,12 @@ class SquarifiedLayout(private val worldOffsetX: Double,
                 }
                 a += percentage
             }
+
+            if (currentSum != totalSize)
+                throw IllegalStateException("unequal")
+
+            if (a < 0.99 || a > 1.01)
+                throw IllegalStateException("Not full")
         }
     }
 

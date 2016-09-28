@@ -58,7 +58,7 @@ class BuildingMapper(analysis: ChangeLogAnalysis) {
         val volume = file.lineCount.toDouble()
 
         // Height assuming a cubic with 12 equals sides
-        val height = 1.0 // pow(volume, 1.0 / 3)
+        val height = Math.pow(volume, 1.0 / 3)
 
         // We have a semi-random maximum height per building
         //val maxHeight = Math.ceil(BUILDING_MAX_HEIGHT - Math.floor(Math.random() * BUILDING_MAX_HEIGHT_VARIANCE))

@@ -15,6 +15,7 @@ class JsonWriter(private val buildingMapper: BuildingMapper) {
             writer.append("{ \"mapItems\" : [\n")
             buildingMapper.treeMap.accept(LeafNodeJsonWriter(writer))
             writer.append("\n] }\n")
+            writer.flush()
         }
     }
 
@@ -29,19 +30,19 @@ class JsonWriter(private val buildingMapper: BuildingMapper) {
             // Area is surrounding street gap + building area. Recover real building sizes
             val buildingWidth = model.width //- 2 * STREET_WIDTH
             val buildingLength = model.height //- 2 * STREET_WIDTH
-            val buildingHeight =  20 // file / (buildingLength * buildingWidth)
+            val buildingHeight = Math.pow(buildingWidth * buildingLength, 0.5)
 
-            writer.append("{" +
+            writer.append("\t{" +
                     // The client expects x/y in the center of the cube
                     "\"x\": ${model.x + 0.5 * model.width}," +
                     "\"z\": ${model.y + 0.5 * model.height}," +
-                    "\"w\": $buildingWidth," +
-                    "\"l\": $buildingLength," +
-                    "\"h\": $buildingHeight," +
-                    "\"v\": ${buildingHeight * buildingWidth * buildingLength}," +
+                    "\"w\": $buildingWidth ," +
+                    "\"l\": $buildingLength ," +
+                    "\"h\": $buildingHeight ," +
+                    //"\"v\": ${buildingHeight * buildingWidth * buildingLength}," +
                     "\"s\": ${file.lineCount}," +
                     "\"f\": \"${file.name}\"" +
-                    "}")
+                    "}\n")
         }
     }
 
