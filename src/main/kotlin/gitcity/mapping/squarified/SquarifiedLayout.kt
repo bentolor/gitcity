@@ -156,15 +156,15 @@ class SquarifiedLayout(private val worldOffsetX: Double,
 
     }
 
-    fun layout(root: TreeNode): TreeNode {
+    fun layout(root: TreeNode): Unit {
         root.height = worldHeight
         root.width = worldWidth
         root.targetArea = worldHeight * worldWidth
 
-        return layoutInternal(root)
+        layoutInternal(root)
     }
 
-    private fun layoutInternal(root: TreeNode): TreeNode {
+    private fun layoutInternal(root: TreeNode): Unit {
         val childNodes = root.childNodes
         if (childNodes != null && childNodes.size > 0) {
             layoutBest(root)
@@ -172,8 +172,6 @@ class SquarifiedLayout(private val worldOffsetX: Double,
             for (child in childNodes)
                 layoutInternal(child)
         }
-
-        return root
     }
 
     private fun layoutBest(root: TreeNode) {
