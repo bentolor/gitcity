@@ -59,5 +59,5 @@ class TreeNode {
     }
 
     val isLeaf: Boolean
-        get() = childNodes?.size == 0
+        get() = childNodes?.size ?: 0 == 0
 }
