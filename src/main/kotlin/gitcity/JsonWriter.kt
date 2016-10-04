@@ -27,15 +27,10 @@ class JsonWriter(private val buildingMapper: BuildingMapper) {
             if (!first) writer.append(",\n")
             first = false
             val mi = model.mappable as MappableRepoFile
-            // Area is surrounding street gap + building area. Recover real building sizes
-            val buildingWidth = mi.bounds.w //- 2 * STREET_WIDTH
-            val buildingLength = mi.bounds.h //- 2 * STREET_WIDTH
-            val buildingHeight = mi.buildingProperties.height
 
-//            val correctedArea = buildingWidth * buildingHeight * buildingMapper.oneLineArea
-//            val lc = mi.repoFile.lineCount
-//            if (Math.round(correctedArea - lc) > 0 )
-//                throw IllegalStateException("Nope!")
+            val buildingWidth = mi.bounds.w
+            val buildingLength = mi.bounds.h
+            val buildingHeight = mi.buildingProperties.height
 
             writer.append("\n\t{" +
                     // The client expects x/y in the center of the cube

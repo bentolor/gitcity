@@ -41,6 +41,14 @@ class BuildingMapper(analysis: ChangeLogAnalysis, worldLength: Double = 1000.0) 
             val mappableRepoFile = model.mappable as MappableRepoFile
             val props = mappableRepoFile.buildingProperties
             props.height = Math.pow(props.area, 0.5) * 3
+            // Resize bounds to simulate surrounding streets
+            // Shring by 20%, center in shrunken area
+            with(mappableRepoFile.bounds) {
+                x += 0.1 * w
+                w *= 0.8
+                y += 0.1 * h
+                h *= 0.8
+            }
         }
     }
 
