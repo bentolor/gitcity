@@ -28,7 +28,9 @@ class GitLogstreamParser(private val opts: GitCityOptions, private val gitLogStr
                 var fileChangeStat: String? = reader.readLine()
                 while (fileChangeStat != null && !fileChangeStat.isBlank() && !isHash(fileChangeStat)) {
                     val fileChange = parseFilechange(fileChangeStat)
-                    if (fileChange != null) fileChanges.add(fileChange)
+                    // Does it match the filename filter?
+                    if (fileChange != null && opts.filter.matches(fileChange.filePath.toString()))
+                        fileChanges.add(fileChange)
                     fileChangeStat = reader.readLine()
                 }
 
