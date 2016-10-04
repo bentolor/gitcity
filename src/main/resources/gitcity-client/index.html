@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
     <meta charset="utf-8"/>
-    <script src='vendor/three.min.js'></script>
+    <script src='vendor/three.js'></script>
     <script src='vendor/FirstPersonControls.js'></script>
 </head>
 
@@ -82,7 +82,8 @@
                 }
             }
             // merge it with cityGeometry - very important for performance
-            THREE.GeometryUtils.merge(cityGeometry, buildingMesh);
+            buildingMesh.updateMatrix();
+            cityGeometry.merge( buildingMesh.geometry, buildingMesh.matrix);
         }
 
         // generate the texture
