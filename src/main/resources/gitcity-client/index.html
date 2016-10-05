@@ -21,8 +21,6 @@
 <body style='margin: 0; background-color: #d8e7ff; overflow: hidden;'>
 <script>
 
-    var
-
     // from @mrdoob http://www.mrdoob.com/lab/javascript/webgl/city/01/
     //noinspection JSUnusedAssignment
     var THREEx = THREEx || {};
@@ -177,7 +175,7 @@
     // Connect camera to VR Controls object to let it move by keyboard and BT controler
     vrc.init();
     vrc.object = camera;
-    vrc.moveSpeed = 0.5
+    vrc.moveSpeed = 0.5;
 
     // Apply VR stereo rendering to renderer.
     var effect = new THREE.VREffect(renderer);
