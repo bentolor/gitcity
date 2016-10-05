@@ -187,19 +187,17 @@
     //////////////////////////////////////////////////////////////////////////////////
 
     var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    /*camera.position.y = 100;
+    camera.position.y = 1.85;
     camera.position.z = 0;
-    camera.position.x = 0;*/
+    camera.position.x = 0;
 
     // Apply VR headset positional data to camera.
     var controls = new THREE.VRControls(camera);
-    controls.standing = true;
-    controls.userHeight = 1.85;
 
     // Connect camera to VR Controls object to let it move by keyboard and BT controler
     vrc.init();
     vrc.object = camera;
-    vrc.moveSpeed = 0.005;
+    vrc.moveSpeed = 0.001;
 
     // Apply VR stereo rendering to renderer.
     var effect = new THREE.VREffect(renderer);
@@ -312,12 +310,14 @@
         // (Workaround to use the head tracking direction but separate movement.)
         var camPosX = camera.position.x;
         var camPosZ = camera.position.z;
+        var camPosY = camera.position.y;
 
         // Update VR headset position and apply to camera.
         controls.update();
 
         camera.position.x = camPosX;
         camera.position.z = camPosZ;
+        camera.position.y = camPosY;
 
         // Move camera and reset control states
         vrc.update(delta);
