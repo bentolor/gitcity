@@ -8,17 +8,39 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
-    <script src='vendor/three.js'></script>
-    <script src='vendor/VRControls.js'></script>
-    <script src='vendor/VREffect.js'></script>
-    <script src='vendor/webvr-polyfill.js'></script>
-    <script src='vendor/webvr-manager.js'></script>
-    <!--<script src='vendor/FirstPersonControls.js'></script>-->
-    <script src='vendor/vrControls.js'></script>
 </head>
 
-<body style='margin: 0; background-color: #d8e7ff; overflow: hidden;'>
+<body style='margin: 0; background-color: #d8e7ff; overflow: hidden;'></body>
+
+<script>
+    /** webvr-polyfill configuration */
+    WebVRConfig = {
+        // Forces availability of VR mode.
+        //FORCE_ENABLE_VR: true, // Default: false.
+        // Complementary filter coefficient. 0 for accelerometer, 1 for gyro.
+        //K_FILTER: 0.98, // Default: 0.98.
+        // How far into the future to predict during fast motion.
+        //PREDICTION_TIME_S: 0.040, // Default: 0.040 (in seconds).
+        // Flag to disable touch panner. In case you have your own touch controls
+        // TOUCH_PANNER_DISABLED: true, // Default: false.
+        // Enable yaw panning only, disabling roll and pitch. This can be useful for
+        // panoramas with nothing interesting above or below.
+        // ENABLE_DEPRECATED_API: true, // Default: false.
+        // Scales the recommended buffer size reported by WebVR, which can improve
+        // performance. Making this very small can lower the effective resolution of
+        // your scene.
+        BUFFER_SCALE: 0.75 // default: 1.0, performacne: 0.5
+    };
+</script>
+
+<script src='vendor/three.js'></script>
+<script src='vendor/VRControls.js'></script>
+<script src='vendor/VREffect.js'></script>
+<script src='vendor/webvr-polyfill.js'></script>
+<script src='vendor/webvr-manager.js'></script>
+<!--<script src='vendor/FirstPersonControls.js'></script>-->
+<script src='vendor/vrControls.js'></script>
+
 <script>
     var restURL = '/items/latest';
     //var worldLength = 10.5;
@@ -309,4 +331,5 @@
     }
 
 </script>
-</body>
+
+
