@@ -12,19 +12,19 @@ import gitcity.repository.RepoFile
  * GitCity representing the files.
  * @author Benjamin Schmid <benjamin.schmid@exxcellent.de>
  */
-class BuildingMapper(analysis: ChangeLogAnalysis, worldLength: Double = 10.0) {
+class BuildingMapper(analysis: ChangeLogAnalysis, worldLength: Double = 30.0) {
 
     val treeMap: TreeModel
     val tree: RepoFile
 
-    val sourceVolume: Double
-    val sourceArea: Double
+    val sourceWorldVolume: Double
+    val sourceWorldArea: Double
 
     init {
         tree = analysis.epochs.last().fileTree
 
-        sourceVolume = tree.lineCount.toDouble()
-        sourceArea = sourceVolume / Math.pow(sourceVolume, 1.0 / 3)
+        sourceWorldVolume = tree.lineCount.toDouble()
+        sourceWorldArea = sourceWorldVolume / Math.pow(sourceWorldVolume, 1.0 / 3)
 
         treeMap = tree.toTreeModel(this)
 
@@ -40,7 +40,6 @@ class BuildingMapper(analysis: ChangeLogAnalysis, worldLength: Double = 10.0) {
         override fun visit(model: TreeModel) {
             val mappableRepoFile = model.mappable as MappableRepoFile
             val props = mappableRepoFile.buildingProperties
-            props.height = Math.pow(props.area, 0.5) * 3
             // Resize bounds to simulate surrounding streets
             // Shring by 20%, center in shrunken area
             with(mappableRepoFile.bounds) {
@@ -48,23 +47,25 @@ class BuildingMapper(analysis: ChangeLogAnalysis, worldLength: Double = 10.0) {
                 w *= 0.8
                 y += 0.1 * h
                 h *= 0.8
+                // dim height
+                props.targetHeight =  Math.pow(w * h, 1.0 / 2)
             }
         }
     }
 
     /** Calculate desired building area based on line count (building volume). */
     fun dimBuilding(file: RepoFile): BuildingProperties {
-        val volume = file.lineCount.toDouble()
+        val sourceVolume = file.lineCount.toDouble()
 
         // Height assuming a cubic with 12 equals sides
-        val height = Math.pow(volume, 1.0 / 3)
+        val sourceHeight = Math.pow(sourceVolume, 1.0 / 3)
 
         // We have a semi-random maximum height per building
         //val maxHeight = Math.ceil(BUILDING_MAX_HEIGHT - Math.floor(Math.random() * BUILDING_MAX_HEIGHT_VARIANCE))
         //height = Math.min(height, maxHeight)
 
         // resulting ground area would be
-        val area = volume / height
+        val sourceArea = sourceVolume / sourceHeight
 
         // We have a fixed minimum ground area
         // area = max(1.0, area)
@@ -76,10 +77,10 @@ class BuildingMapper(analysis: ChangeLogAnalysis, worldLength: Double = 10.0) {
         //    trace("\t${file.name}[${file.lineCount}] -> ${Math.round(area)} x ${Math.round(height)}")
         //}
 
-        val relativeVolume = volume / sourceVolume
-        val relativeArea = area / sourceArea
+        val relativeVolume = sourceVolume / sourceWorldVolume
+        val relativeArea = sourceArea / this.sourceWorldArea
 
-        return BuildingProperties(area, height, relativeArea, relativeVolume)
+        return BuildingProperties(sourceArea, sourceHeight, relativeArea, relativeVolume)
     }
 
 }

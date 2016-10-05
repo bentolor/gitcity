@@ -30,7 +30,7 @@ class JsonWriter(private val buildingMapper: BuildingMapper) {
 
             val buildingWidth = mi.bounds.w
             val buildingLength = mi.bounds.h
-            val buildingHeight = mi.buildingProperties.height
+            val buildingHeight = mi.buildingProperties.targetHeight
 
             writer.append("\n\t{" +
                     // The client expects x/y in the center of the cube
