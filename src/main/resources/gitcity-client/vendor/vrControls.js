@@ -11,7 +11,7 @@ vrc.object = undefined; // Object to move on update (needs a position)
 vrc.moveSpeed = 0.005; // This will be multiplied to the delta of the current frame
 
 // Buttons
-vrc.buttons = ["right", "up", "left", "down"]; // Tags for all available buttons
+vrc.buttons = ["right", "up", "left", "down","raise","lower"]; // Tags for all available buttons
 vrc.bKeyMapping = {
     39: "right", 	 // Arrow right
     87: "right",	 // W
@@ -20,7 +20,9 @@ vrc.bKeyMapping = {
     37: "left",		 // Arrow left
     88: "left",		 // X
     40: "down",	 // Arrow down
-    68: "down" 	 // D
+    68: "down", 	 // D
+    73: "raise",
+    75: "lower"
 };
 vrc.bKeyArrowsKeys = [
     39, 38, 37, 40	 // Arrow button keys
@@ -107,6 +109,14 @@ vrc.update = function (delta) {
             vrc.object.translateZ(moveDistance);
             // vrc.object.position.z += moveDistance;
         }
+        if (vrc.bCheck["raise"]) {
+            vrc.object.translateY(moveDistance);
+            // vrc.object.position.z -= moveDistance;
+        }
+        if (vrc.bCheck["lower"]) {
+            vrc.object.translateY(-moveDistance);
+            // vrc.object.position.z += moveDistance;
+        }
     }
     return vrc.endFrame(delta);
 };
@@ -122,7 +132,7 @@ vrc.init = function () {
             if (!vrc.bCheck[key]) { // Only when not already pressed (some browser repeat this event while hold)
                 vrc.bBlocked[key] = vrc.blockTime;
             }
-            if (kc === 81 || kc === 89 || kc == 69 || kc == 67) {
+            if (kc === 81 || kc === 89 || kc === 69 || kc === 67 || kc === 77 || kc === 80) {
                 vrc.buttons.forEach(function (buttonKey) {
                     vrc.bCheck[buttonKey] = false;
                     vrc.bPressed[buttonKey] = false;
