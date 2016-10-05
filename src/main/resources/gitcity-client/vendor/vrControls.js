@@ -36,11 +36,14 @@ vrc.safariPressKeysMap = {
 vrc.safariReleaseKeys = [
     99, 101, 113, 121, 122
 ];
+// keycode which will stop the current moving (keyup/down)
+vrc.stopKeys = [ 81, 89, 69, 67, 77, 80, 90 ];
+
 vrc.bCheck = {};	    // Map for held down buttons
 vrc.bPressed = {};	// Map for buttons pressed in this frame
 vrc.bReleased = {}; // Map for buttons released in this frame
 vrc.bBlocked = {};   // Block buttons for some time
-vrc.blockTime = 100; // Seconds to ignore a pressed button after "keydown" event
+vrc.blockTime = 100; // ms to ignore a pressed button after "keydown" event
 vrc.keypress = "";    // Key code of last keypress event (for debugging)
 
 // Init maps with false
@@ -75,7 +78,7 @@ vrc.endFrame = function (delta) {
         // Blocker
         if (vrc.bBlocked[buttonKey] > 0) {
             if (vrc.logKeys)
-                console.log(buttonKey + " blocked for " + vrc.bBlocked[buttonKey] + " seconds (delta: " + delta + ")");
+                console.log(buttonKey + " blocked for " + vrc.bBlocked[buttonKey] + " ms (delta: " + delta + ")");
             vrc.bBlocked[buttonKey] -= delta;
         }
     });
@@ -132,7 +135,10 @@ vrc.init = function () {
             if (!vrc.bCheck[key]) { // Only when not already pressed (some browser repeat this event while hold)
                 vrc.bBlocked[key] = vrc.blockTime;
             }
-            if (kc === 81 || kc === 89 || kc === 69 || kc === 67 || kc === 77 || kc === 80) {
+            if (vrc.stopKeys.indexOf(kc) > -1) {
+                if (vrc.logKeys)
+                    console.log("Stop key found: "+kc);
+
                 vrc.buttons.forEach(function (buttonKey) {
                     vrc.bCheck[buttonKey] = false;
                     vrc.bPressed[buttonKey] = false;
