@@ -20,7 +20,7 @@
 
 <body style='margin: 0; background-color: #d8e7ff; overflow: hidden;'>
 <script>
-    var restURL = '//localhost:8000/items/latest'; //'/items/latest';
+    var restURL = '/items/latest';
     //var worldLength = 10.5;
 
     // from @mrdoob http://www.mrdoob.com/lab/javascript/webgl/city/01/
@@ -201,7 +201,7 @@
     scene.add(light);
 
     // Szene-Hintergrund-Texturen
-    var path = "img/citadella/";
+    var path = "img/citadella.lq/";
     var urls = [path + 'posx.jpg', path + 'negx.jpg',
         path + 'posy.jpg', path + 'negy.jpg',
         path + 'posz.jpg', path + 'negz.jpg' ];
@@ -223,8 +223,9 @@
     //		comment								//
     //////////////////////////////////////////////////////////////////////////////////
 
-    var city = new THREEx.ProceduralCity();
-    //scene.add(city);
+    var city;
+    /*city = new THREEx.ProceduralCity();
+    scene.add(city);*/
 
     //////////////////////////////////////////////////////////////////////////////////
     //		Camera Controls							//
