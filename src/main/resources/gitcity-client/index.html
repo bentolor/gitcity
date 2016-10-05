@@ -1,12 +1,28 @@
 <!DOCTYPE html>
 <head>
     <meta charset="utf-8"/>
+
+    <!-- The following meta line optimizes the site for mobile devices. It sets the viewport size
+     to the screen size, so it will be displayed maximized, but unscaled. -->
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0, shrink-to-fit=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
     <script src='vendor/three.js'></script>
-    <script src='vendor/FirstPersonControls.js'></script>
+    <script src='vendor/VRControls.js'></script>
+    <script src='vendor/VREffect.js'></script>
+    <script src='vendor/webvr-polyfill.js'></script>
+    <script src='vendor/webvr-manager.js'></script>
+    <!--<script src='vendor/FirstPersonControls.js'></script>-->
+    <script src='vendor/vrControls.js'></script>
 </head>
 
 <body style='margin: 0; background-color: #d8e7ff; overflow: hidden;'>
 <script>
+
+    var
+
     // from @mrdoob http://www.mrdoob.com/lab/javascript/webgl/city/01/
     //noinspection JSUnusedAssignment
     var THREEx = THREEx || {};
@@ -139,8 +155,9 @@
     var scene = new THREE.Scene();
     //scene.fog	= new THREE.FogExp2( 0xd0e0f0, 0.0025 );
 
-    var renderer = new THREE.WebGLRenderer({antialias: false, alpha: true });
+    var renderer = new THREE.WebGLRenderer({antialias: false/*, alpha: true */});
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
     document.body.appendChild(renderer.domElement);
 
     //////////////////////////////////////////////////////////////////////////////////
@@ -152,6 +169,30 @@
     camera.position.z = 0;
     camera.position.x = 0;
 
+    // Apply VR headset positional data to camera.
+    var controls = new THREE.VRControls(camera);
+    controls.standing = true;
+    controls.userHeight = 120;
+
+    // Connect camera to VR Controls object to let it move by keyboard and BT controler
+    vrc.init();
+    vrc.object = camera;
+    vrc.moveSpeed = 0.5
+
+    // Apply VR stereo rendering to renderer.
+    var effect = new THREE.VREffect(renderer);
+    effect.setSize(window.innerWidth, window.innerHeight);
+    var manager = new WebVRManager(renderer, effect, { hideButton: false, isUndistorted: false });
+
+    var onResize = function onResize(e) {
+        effect.setSize(window.innerWidth, window.innerHeight);
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+    };
+
+    window.addEventListener('resize', onResize, true);
+    window.addEventListener('vrdisplaypresentchange', onResize, true);
+
     //////////////////////////////////////////////////////////////////////////////////
     //		add an object and make it move					//
     //////////////////////////////////////////////////////////////////////////////////
@@ -159,8 +200,18 @@
     light.position.set(0.75, 1, 0.25);
     scene.add(light);
 
+    // Szene-Hintergrund-Texturen
+    /*var path = "img/citadella/";
+    var urls = [path + 'posx.jpg', path + 'negx.jpg',
+        path + 'posy.jpg', path + 'negy.jpg',
+        path + 'posz.jpg', path + 'negz.jpg' ];
+    var reflectionCube = new THREE.CubeTextureLoader().load( urls );
+    reflectionCube.format = THREE.RGBFormat;
+    scene.background = reflectionCube;*/
+
+
     var material = new THREE.MeshBasicMaterial({color: 0x101018});
-    var planeGeometry = new THREE.PlaneGeometry(2000, 2000);
+    var planeGeometry = new THREE.PlaneGeometry(1000, 1000);
     var plane = new THREE.Mesh(planeGeometry, material);
     plane.rotation.x = -90 * Math.PI / 180;
     scene.add(plane);
@@ -175,16 +226,16 @@
     //////////////////////////////////////////////////////////////////////////////////
     //		Camera Controls							//
     //////////////////////////////////////////////////////////////////////////////////
-    var controls = new THREE.FirstPersonControls(camera);
-    controls.movementSpeed = 20;
-    controls.lookSpeed = 0.05;
-    controls.lookVertical = true;
-    controls.lat = -30;
-    controls.lon = 128;
-    controls.update(0);
+    /*var mouseControl = new THREE.FirstPersonControls(camera);
+    mouseControl.movementSpeed = 20;
+    mouseControl.lookSpeed = 0.05;
+    mouseControl.lookVertical = true;
+    mouseControl.lat = -30;
+    mouseControl.lon = 128;
+    mouseControl.update(0);
     updateFcts.push(function (delta, now) {
-        controls.update(delta);
-    });
+        mouseControl.update(delta);
+    });*/
 
     //////////////////////////////////////////////////////////////////////////////////
     //		render the scene						//
@@ -196,7 +247,7 @@
     //////////////////////////////////////////////////////////////////////////////////
     //		loop runner							//
     //////////////////////////////////////////////////////////////////////////////////
-    var lastTimeMsec = null;
+    /*var lastTimeMsec = null;
     requestAnimationFrame(function animate(nowMsec) {
         // keep looping
         requestAnimationFrame(animate);
@@ -208,9 +259,11 @@
         updateFcts.forEach(function (updateFn) {
             updateFn(deltaMsec / 1000, nowMsec / 1000)
         })
-    });
+    });*/
 
-      var loader = new THREE.XHRLoader();
+    requestAnimationFrame(animate);	// Request animation frame loop function
+
+    var loader = new THREE.XHRLoader();
       loader.load('/items/latest',
             function ( xhrResponse ) {
                 var cityData = JSON.parse( xhrResponse );
@@ -221,5 +274,35 @@
                 city = newCity;
             }
     );
+
+    // Request animation frame loop function
+    // ===========================================================================
+    var lastRender = 0;
+    function animate(timestamp) {
+        var delta  = Math.min(timestamp - lastRender, 500);
+        lastRender = timestamp;
+
+        // Store the camera position, so we can set it back after reading the VR headset's position
+        // (Workaround to use the head tracking direction but separate movement.)
+        var camPosX = camera.position.x;
+        var camPosZ = camera.position.z;
+
+        // Update VR headset position and apply to camera.
+        controls.update();
+
+        camera.position.x = camPosX;
+        camera.position.z = camPosZ;
+
+        // Move camera and reset control states
+        vrc.update(delta);
+
+        camera.updateProjectionMatrix();
+
+        // Render the scene through the manager.
+        manager.render(scene, camera, timestamp);
+
+        requestAnimationFrame( animate );	// repeat the animation
+    }
+
 </script>
 </body>
