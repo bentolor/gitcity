@@ -20,6 +20,8 @@
 
 <body style='margin: 0; background-color: #d8e7ff; overflow: hidden;'>
 <script>
+    var restURL = '//localhost:8000/items/latest'; //'/items/latest';
+    //var worldLength = 10.5;
 
     // from @mrdoob http://www.mrdoob.com/lab/javascript/webgl/city/01/
     //noinspection JSUnusedAssignment
@@ -162,20 +164,20 @@
     //		comment								//
     //////////////////////////////////////////////////////////////////////////////////
 
-    var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 3000);
-    camera.position.y = 100;
+    var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    /*camera.position.y = 100;
     camera.position.z = 0;
-    camera.position.x = 0;
+    camera.position.x = 0;*/
 
     // Apply VR headset positional data to camera.
     var controls = new THREE.VRControls(camera);
     controls.standing = true;
-    controls.userHeight = 120;
+    controls.userHeight = 1.85;
 
     // Connect camera to VR Controls object to let it move by keyboard and BT controler
     vrc.init();
     vrc.object = camera;
-    vrc.moveSpeed = 0.5;
+    vrc.moveSpeed = 0.005;
 
     // Apply VR stereo rendering to renderer.
     var effect = new THREE.VREffect(renderer);
@@ -199,20 +201,23 @@
     scene.add(light);
 
     // Szene-Hintergrund-Texturen
-    /*var path = "img/citadella/";
+    var path = "img/citadella/";
     var urls = [path + 'posx.jpg', path + 'negx.jpg',
         path + 'posy.jpg', path + 'negy.jpg',
         path + 'posz.jpg', path + 'negz.jpg' ];
     var reflectionCube = new THREE.CubeTextureLoader().load( urls );
     reflectionCube.format = THREE.RGBFormat;
-    scene.background = reflectionCube;*/
+    scene.background = reflectionCube;
 
-
-    var material = new THREE.MeshBasicMaterial({color: 0x101018});
-    var planeGeometry = new THREE.PlaneGeometry(1000, 1000);
+    /*var texture = new THREE.TextureLoader().load('img/Cement/Cement.jpg');
+    texture.wrapS = THREE.MirroredRepeatWrapping;
+    texture.wrapT = THREE.MirroredRepeatWrapping;
+    var material = new THREE.MeshBasicMaterial({color: 0x101018, map: texture});
+    var planeGeometry = new THREE.PlaneGeometry(worldLength, worldLength);
     var plane = new THREE.Mesh(planeGeometry, material);
     plane.rotation.x = -90 * Math.PI / 180;
-    scene.add(plane);
+    scene.add(plane);*/
+
 
     //////////////////////////////////////////////////////////////////////////////////
     //		comment								//
@@ -262,8 +267,8 @@
     requestAnimationFrame(animate);	// Request animation frame loop function
 
     var loader = new THREE.XHRLoader();
-      loader.load('/items/latest',
-            function ( xhrResponse ) {
+    loader.load(restURL,
+                function ( xhrResponse ) {
                 var cityData = JSON.parse( xhrResponse );
                 //noinspection JSUnresolvedVariable
                 var newCity = new THREEx.ProceduralCity(cityData.mapItems);
@@ -275,9 +280,9 @@
 
     // Request animation frame loop function
     // ===========================================================================
-    var lastRender = 0;
+    var lastRender = -1;
     function animate(timestamp) {
-        var delta  = Math.min(timestamp - lastRender, 500);
+        var delta  = lastRender < 0 ? 0 : timestamp - lastRender;
         lastRender = timestamp;
 
         // Store the camera position, so we can set it back after reading the VR headset's position
