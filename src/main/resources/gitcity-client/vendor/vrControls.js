@@ -72,7 +72,8 @@ vrc.endFrame = function (delta) {
         debugText += buttonKey + ":  " + vrc.bCheck[buttonKey] + "<br />";
         // Blocker
         if (vrc.bBlocked[buttonKey] > 0) {
-            // console.log(buttonKey + " blocked for " + bBlocked[buttonKey] + " seconds (delta: " + delta + ")");
+            if (vrc.logKeys)
+                console.log(buttonKey + " blocked for " + vrc.bBlocked[buttonKey] + " seconds (delta: " + delta + ")");
             vrc.bBlocked[buttonKey] -= delta;
         }
     });
@@ -112,13 +113,22 @@ vrc.update = function (delta) {
 
 vrc.init = function () {
     document.body.addEventListener('keydown', function (e) {
-        var key = vrc.bKeyMapping[e.keyCode];
+        var kc = e.keyCode;
+        var key = vrc.bKeyMapping[kc];
         if (vrc.logKeys) {
-            console.log("keydown: e.keyCode: " + e.keyCode + " (Mapped: " + key + ")");
+            console.log("keydown: e.keyCode: " + kc + " (Mapped: " + key + ")");
         }
-        if (vrc.bKeyArrowsKeys.indexOf(e.keyCode) < 0) { // Skip arrow keys
+        if (vrc.bKeyArrowsKeys.indexOf(kc) < 0) { // Skip arrow keys
             if (!vrc.bCheck[key]) { // Only when not already pressed (some browser repeat this event while hold)
                 vrc.bBlocked[key] = vrc.blockTime;
+            }
+            if (kc === 81 || kc === 89 || kc == 69 || kc == 67) {
+                vrc.buttons.forEach(function (buttonKey) {
+                    vrc.bCheck[buttonKey] = false;
+                    vrc.bPressed[buttonKey] = false;
+                    vrc.bReleased[buttonKey] = false;
+                    vrc.bBlocked[buttonKey] = 0;
+                });
             }
         }
         vrc.pressButton(key);
