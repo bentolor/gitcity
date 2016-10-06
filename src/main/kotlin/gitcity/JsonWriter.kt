@@ -13,7 +13,7 @@ class JsonWriter(private val buildingMapper: BuildingMapper, val epochId: String
     fun writeTo(output: OutputStream) {
         output.writer().use { writer ->
             writer.append("{ \"mapItems\" : [\n")
-            buildingMapper.treeMapByEpoch[epochId]?.accept(LeafNodeJsonWriter(writer))
+            buildingMapper.getTreeMapByEpoch(epochId).accept(LeafNodeJsonWriter(writer))
             writer.append("\n],\n")
             writer.append("\"worldLength\": ${buildingMapper.worldLength}")
             writer.append("}\n")

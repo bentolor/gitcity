@@ -1,6 +1,7 @@
 package gitcity.mapping.building
 
 import gitcity.ChangeLogAnalysis
+import gitcity.info
 import gitcity.mapping.treemap.Rect
 import gitcity.mapping.treemap.SquarifiedLayout
 import gitcity.mapping.treemap.TreeModel
@@ -16,14 +17,16 @@ import java.lang.Math.pow
  */
 class BuildingMapper(val analysis: ChangeLogAnalysis) {
 
-    val treeMapByEpoch: MutableMap<String, TreeModel>
     val epochIds: List<String>
-
     val sourceWorldVolume: Double
     val sourceWorldArea: Double
     val worldLength: Double
 
+    private val treeMapByEpoch: MutableMap<String, TreeModel>
+    private val finishedCity: TreeModel
+
     init {
+        info("Sizing the buildings of the final city")
         epochIds = analysis.epochs.map { it.changeSet.id }
 
         val tree = analysis.epochs.last().fileTree
@@ -38,20 +41,24 @@ class BuildingMapper(val analysis: ChangeLogAnalysis) {
         val worldRect = Rect(-worldLength / 2, -worldLength / 2, worldLength, worldLength)
 
         // We build the "final built" city based on the very last commit
-        val finishedCity = buildFinalCity(tree, worldRect)
+        finishedCity = buildFinalCity(tree, worldRect)
         treeMapByEpoch = mutableMapOf(Pair(epochIds.last(), finishedCity))
+    }
 
-        // now iterate over remaining epochs & build a copy of the final city with adjusted properties (height)
-        for (epochId in epochIds) {
-            trace("Processing epoch $epochId")
-            treeMapByEpoch.getOrPut(epochId, { buildInterimsCity(finishedCity, epochId) })
-        }
+    /**
+     * Lazily build a adjusted copy on remaining epochs as a copy of the final city with adjusted properties (height)
+     */
+    fun getTreeMapByEpoch(epochId: String): TreeModel {
+        trace("Processing epoch $epochId")
+        return treeMapByEpoch.getOrPut(epochId, { buildInterimsCity(finishedCity, epochId) })
     }
 
     private fun buildFinalCity(tree: RepoFile, worldRect: Rect): TreeModel {
         val lastEpochTreeMap = tree.toTreeModel(this)
         lastEpochTreeMap.mappable.bounds = worldRect
+        info("Applying a squarified treemap layout")
         lastEpochTreeMap.layout(SquarifiedLayout())
+        info("Post-processing building properties")
         lastEpochTreeMap.accept(PostProcessing())
         return lastEpochTreeMap
     }
