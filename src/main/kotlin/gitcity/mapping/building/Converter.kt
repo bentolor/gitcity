@@ -1,6 +1,5 @@
 package gitcity.mapping.building
 
-import gitcity.debug
 import gitcity.mapping.treemap.TreeModel
 import gitcity.repository.RepoFile
 import gitcity.trace
@@ -32,10 +31,6 @@ fun RepoFile.buildTreeModelByTemplate(template: TreeModel, buildingMapper: Build
     val templateHeight = sourceFile.buildingProperties.sourceHeight
     val newTargetHeight = templateTargetHeight * locRatio
     val newSourceHeight = templateHeight * locRatio
-
-    if ("BuildingMapper.kt" == sourceFileName) {
-        debug("${this.lineCount} / ${sourceFile.repoFile.lineCount} = $locRatio")
-    }
 
     val newProps = sourceFile.buildingProperties.copy(sourceHeight = newSourceHeight, targetHeight = newTargetHeight)
     val newCopy = TreeModel(MappableRepoFile(this, newProps))
