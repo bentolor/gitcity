@@ -22,6 +22,7 @@ fun main(args: Array<String>) {
 
     port(opts.port)
     info("Access http://localhost:${opts.port}/ with your browser or VR device to access GitCity")
+    info("   Use http://localhost:${opts.port}/?static=true to disable animation")
     staticFiles.location("/gitcity-client")
 
     get("/city/latest", { req, res ->
