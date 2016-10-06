@@ -32,7 +32,7 @@ fun main(args: Array<String>) {
 
     get("/city/stats", { req, res ->
         res.type("application/json")
-        "{ \"epochCount\": ${buildingMapper.epochIds.size} } "
+        "{ \"epochCount\": ${buildingMapper.epochIds.size}, \"worldLength\": ${buildingMapper.worldLength} } "
     })
 
     get("/city/byIndex/:index", { req, res ->
