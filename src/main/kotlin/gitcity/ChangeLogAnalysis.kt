@@ -1,6 +1,9 @@
 package gitcity
 
-import gitcity.repository.*
+import gitcity.repository.ChangeLog
+import gitcity.repository.ChangeSet
+import gitcity.repository.RepoEpoch
+import gitcity.repository.RepoFile
 
 /**
  * Analyze a git changelog and calculates statistics on a timeline
@@ -23,6 +26,8 @@ class ChangeLogAnalysis(val opts: GitCityOptions, changeLog: ChangeLog) {
         info("Last commit contains a total of ${lastEpochTree.lineCount} lines in ${lastEpochTree.fileCount} files " +
                 "and ${lastEpochTree.dirCount} directories")
     }
+
+    fun epoch(epochId: String): RepoEpoch = epochs.find { it.changeSet.id == epochId } ?: throw IllegalStateException("Unknown: $epochId")
 
     private fun calculateNewEpoch(lastEpochTree: RepoFile, changeSet: ChangeSet): RepoEpoch {
         // make a full clone

@@ -15,6 +15,13 @@ data class RepoFile(
     val isLeaf: Boolean
         get() = children == null
 
+    val path: String
+        get() {
+            val p = parent
+            // topmost parent is the repository directory. Skip that
+            return if (p?.parent != null) (p?.path ?: "") + '/' + name else name
+        }
+
     fun getPathFiles(filePath: String): List<RepoFile> = this.getPathFiles(java.io.File(filePath).toPath())
 
     /**
