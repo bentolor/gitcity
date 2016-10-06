@@ -1,6 +1,7 @@
 package gitcity.repository
 
 import gitcity.GitCityOptions
+import gitcity.debug
 import gitcity.info
 import gitcity.trace
 import java.io.BufferedReader
@@ -36,7 +37,7 @@ class GitLogstreamParser(private val opts: GitCityOptions, private val gitLogStr
 
                 // Reverse order, so "first" commit is actual first in list
                 if (fileChanges.size > 0) changeSets.add(0, ChangeSet(sha1, timeStamp, author, subject, fileChanges))
-                else info("Skipping commit ${sha1} as it contains no relevant changes after filtering")
+                else debug("Skipping commit ${sha1} as it contains no relevant changes after filtering")
 
                 // prepare next change
                 if (isHash(fileChangeStat))  // was this an empty commit?

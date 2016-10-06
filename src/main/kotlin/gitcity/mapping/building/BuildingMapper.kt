@@ -1,11 +1,11 @@
 package gitcity.mapping.building
 
 import gitcity.ChangeLogAnalysis
-import gitcity.debug
 import gitcity.mapping.treemap.Rect
 import gitcity.mapping.treemap.SquarifiedLayout
 import gitcity.mapping.treemap.TreeModel
 import gitcity.repository.RepoFile
+import gitcity.trace
 import java.lang.Math.pow
 
 
@@ -38,7 +38,7 @@ class BuildingMapper(val analysis: ChangeLogAnalysis, val worldLength: Double = 
 
         // now iterate over remaining epochs & build a copy of the final city with adjusted properties (height)
         for (epochId in epochIds) {
-            debug("Processing epoch $epochId")
+            trace("Processing epoch $epochId")
             treeMapByEpoch.getOrPut(epochId, { buildInterimsCity(finishedCity, epochId) })
         }
     }
