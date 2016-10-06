@@ -50,9 +50,10 @@ private fun showUrlParameteHelp(opts: GitCityOptions) {
     info("Access http://localhost:${opts.port}/ with your browser or VR device to access GitCity")
     info("  The URL support options as query parameters:")
     info("      static = <true|false>    directly jump to the finished city w/o animation ")
-    info("      frameDuration = <500>   ms between each frame. ")
+    info("      frameDuration = <500>    ms between each frame ")
+    info("      limitFrameCount = <200>  Max. number of frames you want to see.  ")
     info("")
-    info("  Example:  http://localhost:${opts.port}/?static=false&frameDuration=300 ")
+    info("  Example:  http://localhost:${opts.port}/?static=false&frameDuration=300&limitFrameCount=40 ")
     info("")
 }
 

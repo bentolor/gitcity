@@ -42,8 +42,9 @@
 
 <script>
     var restBaseURL = '/city';
-    var epochDuration = getUrlQueryOpt("frameDuration", 500);
-    var noAnimation = getUrlQueryOpt("static");
+    var frameDuration = 1 * getUrlQueryOpt("frameDuration", 500);
+    var noAnimation = getUrlQueryOpt("static") === "true";
+    var limitFrameCount = 1 * getUrlQueryOpt("limitFrameCount", 200);
 
     // from @mrdoob http://www.mrdoob.com/lab/javascript/webgl/city/01/
     //noinspection JSUnusedAssignment
@@ -203,7 +204,7 @@
     //////////////////////////////////////////////////////////////////////////////////
 
     var city, ground, cityTimestamp;
-    var epochCount, currentEpoch = -1;
+    var epochCount, currentEpoch = -1, epochStepSize = 1;
     var loader = new THREE.XHRLoader();
 
     loader.load(restBaseURL + "/stats",
@@ -212,6 +213,7 @@
             replaceGroundPlane(stats.worldLength);
 
             epochCount = stats.epochCount;
+            epochStepSize = epochCount > limitFrameCount ? Math.max(1, Math.round(epochCount / limitFrameCount)) : 1;
             currentEpoch = noAnimation ? epochCount - 1 : 0;
             replaceCity(currentEpoch)
         }
@@ -294,10 +296,10 @@
 
     var loadingNewEpoch;
     function progressToNextCityIteration(timestamp) {
-        if (timestamp - cityTimestamp > epochDuration
+        if (timestamp - cityTimestamp > frameDuration
                 && currentEpoch < epochCount - 2
                 && !loadingNewEpoch) {
-            currentEpoch++;
+            currentEpoch = Math.min(epochCount - 1, currentEpoch + epochStepSize);
             replaceCity(currentEpoch)
         }
     }
