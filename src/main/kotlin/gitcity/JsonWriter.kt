@@ -8,12 +8,12 @@ import java.io.OutputStream
 import java.io.Writer
 
 /** Render layout result to an output stream .*/
-class JsonWriter(private val buildingMapper: BuildingMapper) {
+class JsonWriter(private val buildingMapper: BuildingMapper, val epochId: String) {
 
     fun writeTo(output: OutputStream) {
         output.writer().use { writer ->
             writer.append("{ \"mapItems\" : [\n")
-            buildingMapper.treeMap.accept(LeafNodeJsonWriter(writer))
+            buildingMapper.treeMap[epochId]?.accept(LeafNodeJsonWriter(writer))
             writer.append("\n],\n")
             writer.append("\"worldLength\": ${buildingMapper.worldLength}")
             writer.append("}\n")

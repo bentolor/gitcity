@@ -15,26 +15,33 @@ import java.awt.Color
  */
 class BuildingMapper(analysis: ChangeLogAnalysis, val worldLength: Double = 30.0) {
 
-    val treeMap: TreeModel
-    val tree: RepoFile
+    val treeMap: MutableMap<String, TreeModel>
+    val epochIds: List<String>
 
     val sourceWorldVolume: Double
     val sourceWorldArea: Double
 
     init {
-        tree = analysis.epochs.last().fileTree
+        epochIds = analysis.epochs.map { it.changeSet.id }
+
+        val tree = analysis.epochs.last().fileTree
 
         sourceWorldVolume = tree.lineCount.toDouble()
         sourceWorldArea = sourceWorldVolume / Math.pow(sourceWorldVolume, 1.0 / 3)
 
-        treeMap = tree.toTreeModel(this)
-
         val worldRect = Rect(-worldLength / 2, -worldLength / 2, worldLength, worldLength)
-        treeMap.mappable.bounds = worldRect
 
-        treeMap.layout(SquarifiedLayout())
+        // We build the "final built" city based on the very last commit
+        val finishedCity = buildFinalCity(tree, worldRect)
+        treeMap = mutableMapOf(Pair(epochIds.last(), finishedCity))
+    }
 
-        treeMap.accept(PostProcessing())
+    private fun buildFinalCity(tree: RepoFile, worldRect: Rect): TreeModel {
+        val lastEpochTreeMap = tree.toTreeModel(this)
+        lastEpochTreeMap.mappable.bounds = worldRect
+        lastEpochTreeMap.layout(SquarifiedLayout())
+        lastEpochTreeMap.accept(PostProcessing())
+        return lastEpochTreeMap
     }
 
     inner class PostProcessing : TreeModelVisitor {
