@@ -25,6 +25,7 @@ data class GitCityOptions(
         for (value in args) {
             if (value.startsWith("--")) {
                 optionName = value.substring(2)
+                if (optionName == "help") showHelp();
             } else if (value.startsWith("-")) {
                 parseShortParam(value.substring(1))
             } else if (optionName != null) {
@@ -46,7 +47,6 @@ data class GitCityOptions(
 
     private fun parseParameterValue(optionName: String, optionValue: String) {
         when (optionName) {
-            "help" -> showHelp()
             "repoPath" -> repoPath = FileSystems.getDefault().getPath(optionValue)
             "filter" -> filter = Regex(optionValue)
             "port" -> port = Integer.parseInt(optionValue)
