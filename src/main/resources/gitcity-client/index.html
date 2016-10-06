@@ -38,7 +38,6 @@
 <script src='vendor/VREffect.js'></script>
 <script src='vendor/webvr-polyfill.js'></script>
 <script src='vendor/webvr-manager.js'></script>
-<!--<script src='vendor/FirstPersonControls.js'></script>-->
 <script src='vendor/vrControls.js'></script>
 
 <script>
@@ -98,7 +97,7 @@
             }
 
             // put a random rotation
-            buildingMesh.rotation.y = 0; //Math.random()*Math.PI*2;
+            //Math.random()*Math.PI*2;
 
             // establish the base color for the buildingMesh
             var value = 1 - Math.random() * Math.random();
@@ -122,11 +121,12 @@
             }
             // merge it with cityGeometry - very important for performance
             buildingMesh.updateMatrix();
+
             cityGeometry.merge( buildingMesh.geometry, buildingMesh.matrix);
         }
 
         // generate the texture
-        var texture = new THREE.Texture(generateTextureCanvas());
+        var texture = new THREE.Texture(generateBuildingTextureCanvas());
         texture.anisotropy = renderer.getMaxAnisotropy();
         texture.needsUpdate = true;
 
@@ -186,62 +186,14 @@
     light.position.set(0.75, 1, 0.25);
     scene.add(light);
 
-    // Szene-Hintergrund-Texturen
-    var path = "img/citadella.lq/";
-    var urls = [path + 'posx.jpg', path + 'negx.jpg',
-        path + 'posy.jpg', path + 'negy.jpg',
-        path + 'posz.jpg', path + 'negz.jpg' ];
-    var reflectionCube = new THREE.CubeTextureLoader().load( urls );
-    reflectionCube.format = THREE.RGBFormat;
-    scene.background = reflectionCube;
+    scene.background = createSkybox();
 
 
     //////////////////////////////////////////////////////////////////////////////////
-    //		comment								//
+    //		load city data and show elements
     //////////////////////////////////////////////////////////////////////////////////
 
-    var city;
-    var ground;
-    /*city = new THREEx.ProceduralCity();
-    scene.add(city);*/
-
-    //////////////////////////////////////////////////////////////////////////////////
-    //		Camera Controls							//
-    //////////////////////////////////////////////////////////////////////////////////
-    /*var mouseControl = new THREE.FirstPersonControls(camera);
-    mouseControl.movementSpeed = 20;
-    mouseControl.lookSpeed = 0.05;
-    mouseControl.lookVertical = true;
-    mouseControl.lat = -30;
-    mouseControl.lon = 128;
-    mouseControl.update(0);
-    updateFcts.push(function (delta, now) {
-        mouseControl.update(delta);
-    });*/
-
-    //////////////////////////////////////////////////////////////////////////////////
-    //		render the scene						//
-    //////////////////////////////////////////////////////////////////////////////////
-    /*updateFcts.push(function () {
-        renderer.render(scene, camera);
-    });*/
-    //////////////////////////////////////////////////////////////////////////////////
-    //		loop runner							//
-    //////////////////////////////////////////////////////////////////////////////////
-    /*var lastTimeMsec = null;
-    requestAnimationFrame(function animate(nowMsec) {
-        // keep looping
-        requestAnimationFrame(animate);
-        // measure time
-        lastTimeMsec = lastTimeMsec || nowMsec - 1000 / 60;
-        var deltaMsec = Math.min(200, nowMsec - lastTimeMsec);
-        lastTimeMsec = nowMsec;
-        // call each update function
-        updateFcts.forEach(function (updateFn) {
-            updateFn(deltaMsec / 1000, nowMsec / 1000)
-        })
-    });*/
-
+    var city, ground;
     var loader = new THREE.XHRLoader();
     loader.load(restURL,
                 function ( xhrResponse ) {
@@ -293,8 +245,9 @@
 
     /**
      * Generates a texture for the buildings with simulated floors & window rows.
+     * @return {HTMLCanvasElement}
      */
-    function generateTextureCanvas() {
+    function generateBuildingTextureCanvas() {
         // build a small canvas 32x64 and paint it in white
         var canvas = document.createElement('canvas');
         canvas.width = 32;
@@ -330,9 +283,24 @@
     }
 
     /**
+     * Creates a Skybox texture.
+     * @returns {THREE.CubeTexture}
+     */
+    function createSkybox() {
+        // Szene-Hintergrund-Texturen
+        var path = "img/citadella.lq/";
+        var urls = [path + 'posx.jpg', path + 'negx.jpg',
+            path + 'posy.jpg', path + 'negy.jpg',
+            path + 'posz.jpg', path + 'negz.jpg' ];
+        var reflectionCube = new THREE.CubeTextureLoader().load( urls );
+        reflectionCube.format = THREE.RGBFormat;
+        return reflectionCube;
+    }
+
+    /**
      * Builds a textured plane representing the ground layer with a cement texture.
      * @param worldLength The lenght
-     * @returns {THREE.Mesh}
+     * @return {THREE.Mesh}
      */
     function buildGroundPlane(worldLength) {
         var texture = new THREE.TextureLoader().load('img/Cement/Cement.jpg');
