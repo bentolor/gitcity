@@ -3,6 +3,7 @@ import gitcity.GitCityOptions
 import gitcity.JsonWriter
 import gitcity.info
 import gitcity.mapping.building.BuildingMapper
+import gitcity.repository.ChangeLog
 import gitcity.repository.GitRepositoryReader
 import spark.Spark.*
 
@@ -15,9 +16,11 @@ fun main(args: Array<String>) {
     printLogo()
     val opts = GitCityOptions().parse(args)
 
-    val changeLog = GitRepositoryReader().parseRepository(opts)
-    val analysis = ChangeLogAnalysis(opts, changeLog)
+    val changeLog: ChangeLog
+    if (opts.gitLog == null) changeLog = GitRepositoryReader().parseRepository(opts)
+    else changeLog = GitRepositoryReader().parseGitLogFile(opts)
 
+    val analysis = ChangeLogAnalysis(opts, changeLog)
     val buildingMapper = BuildingMapper(analysis)
 
     port(opts.port)

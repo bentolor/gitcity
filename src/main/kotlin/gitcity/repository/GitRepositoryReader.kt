@@ -30,6 +30,15 @@ class GitRepositoryReader {
         return GitLogstreamParser(opts, gitLogStream).parse()
     }
 
+    /**
+     * Execute Git to log the changes in a Git repository
+     */
+    fun parseGitLogFile(opts: GitCityOptions): ChangeLog {
+        val logFile = opts.gitLog ?: throw IllegalStateException("logfile is null?")
+        info("Using git log output in file $logFile")
+        return GitLogstreamParser(opts, logFile.toFile().inputStream()).parse()
+    }
+
 }
 
 
