@@ -23,6 +23,10 @@ fun main(args: Array<String>) {
     val analysis = ChangeLogAnalysis(opts, changeLog)
     val buildingMapper = BuildingMapper(analysis)
 
+    info("Configuring web server")
+
+    showUrlParameteHelp(opts)
+
     port(opts.port)
     staticFiles.location("/gitcity-client")
 
@@ -45,7 +49,6 @@ fun main(args: Array<String>) {
                 .writeTo(res.raw().outputStream)
     })
 
-    showUrlParameteHelp(opts)
 }
 
 private fun showUrlParameteHelp(opts: GitCityOptions) {

@@ -14,7 +14,7 @@ class ChangeLogAnalysis(val opts: GitCityOptions, changeLog: ChangeLog) {
     val epochs: List<RepoEpoch>
 
     init {
-        info("Beginning analysis ...")
+        info("Beginning revision/LOC analysis ...")
         val epochs = mutableListOf<RepoEpoch>()
         var lastEpochTree: RepoFile = RepoFile(changeLog.name)
         for (changeSet in changeLog.changeSets) {
