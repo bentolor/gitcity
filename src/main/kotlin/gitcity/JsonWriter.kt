@@ -32,7 +32,7 @@ class JsonWriter(private val buildingMapper: BuildingMapper) {
 
             val buildingWidth = mi.bounds.w
             val buildingLength = mi.bounds.h
-            val buildingHeight = mi.buildingProperties.targetHeight
+            val props = mi.buildingProperties
 
             writer.append("\n\t{" +
                     // The client expects x/y in the center of the cube
@@ -40,10 +40,11 @@ class JsonWriter(private val buildingMapper: BuildingMapper) {
                     "\"z\": ${mi.bounds.y + 0.5 * mi.bounds.h}," +
                     "\"w\": $buildingWidth," +
                     "\"l\": $buildingLength," +
-                    "\"h\": $buildingHeight," +
+                    "\"h\": ${props.targetHeight}," +
                     // "\"v\": ${buildingHeight * buildingWidth * buildingLength}," +
                     "\"f\": { \"lc\": ${mi.repoFile.lineCount}," +
-                    "\"n\": \"${mi.repoFile.name}\" } " +
+                    "\"n\": \"${mi.repoFile.name}\"}," +
+                    "\"color\": \"#${Integer.toHexString(props.color.rgb).substring(2)}\"" +
                     "}")
         }
     }

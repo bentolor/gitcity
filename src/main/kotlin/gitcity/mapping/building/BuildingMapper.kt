@@ -6,6 +6,7 @@ import gitcity.mapping.treemap.SquarifiedLayout
 import gitcity.mapping.treemap.TreeModel
 import gitcity.mapping.treemap.TreeModelVisitor
 import gitcity.repository.RepoFile
+import java.awt.Color
 
 /**
  * Various algorithms, settings and heuristics to influence the placement, sizing and other visual properties of the "buildings" in
@@ -36,9 +37,12 @@ class BuildingMapper(analysis: ChangeLogAnalysis, val worldLength: Double = 30.0
         treeMap.accept(PostProcessing())
     }
 
-    inner class PostProcessing: TreeModelVisitor {
+    inner class PostProcessing : TreeModelVisitor {
+        val extensionColorMap: MutableMap<String, Color> = mutableMapOf()
+
         override fun visit(model: TreeModel) {
             val mappableRepoFile = model.mappable as MappableRepoFile
+
             val props = mappableRepoFile.buildingProperties
             // Resize bounds to simulate surrounding streets
             // Shring by 20%, center in shrunken area
@@ -48,8 +52,27 @@ class BuildingMapper(analysis: ChangeLogAnalysis, val worldLength: Double = 30.0
                 y += 0.1 * h
                 h *= 0.8
                 // dim height
-                props.targetHeight =  Math.pow(w * h, 1.0 / 2)
+                props.targetHeight = Math.pow(w * h, 1.0 / 2)
             }
+
+            // shuffle a colour by file extension
+            val fileName = mappableRepoFile.repoFile.name
+            val extension = fileName.substringAfterLast('.', "<none>")
+            props.color = modifyColorIntensity(extensionColorMap.getOrPut(extension, { randomColor() }))
+        }
+
+        fun randomColor(): Color {
+            val value = 0.15 + ((Math.random() / 2) * (Math.random() / 2))
+            val brightness = 0.8 - 0.5 * Math.random() * Math.random()
+            val hue = Math.random()
+            return Color.getHSBColor(hue.toFloat(), value.toFloat(), brightness.toFloat())
+        }
+
+        fun modifyColorIntensity(source: Color): Color {
+            val hsbVals = Color.RGBtoHSB(source.red, source.green, source.blue, null)
+            val value = 0.15 + ((Math.random() / 2) * (Math.random() / 2))
+            val brightness = 0.8 - 0.5 * Math.random() * Math.random()
+            return Color.getHSBColor(hsbVals[0], value.toFloat(), brightness.toFloat())
         }
     }
 

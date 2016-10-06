@@ -101,10 +101,14 @@
 
             // establish the base color for the buildingMesh
             var value = 0.15 + ( (Math.random() / 2) * (Math.random() / 2) );
-//            var baseColor = new THREE.Color().setRGB(value + Math.random() * 0.1, value, value + Math.random() * 0.1);
             var brightness = 0.8 - 0.5 * Math.random() * Math.random();
             var hue = Math.random();
             var baseColor = new THREE.Color().setHSL(hue, value, brightness);
+            // if server tells us a color, take that:
+            if (building.color) {
+                baseColor = new THREE.Color(building.color)
+            }
+
             // set topColor/bottom vertexColors as adjustement of baseColor
             var topColor = baseColor.clone().multiply(light);
             var bottomColor = baseColor.clone().multiply(shadow);
