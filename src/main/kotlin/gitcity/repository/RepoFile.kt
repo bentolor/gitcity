@@ -64,5 +64,9 @@ data class RepoFile(
         myString = children?.values?.fold(myString, { s, f -> s + f.toString() }) ?: myString
         return myString
     }
+
+    override fun hashCode(): Int {
+        return name.hashCode()
+    }
 }
 
