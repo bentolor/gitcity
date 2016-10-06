@@ -16,28 +16,50 @@ data class GitCityOptions(
     val realPath: Path
         get() = repoPath.toRealPath()
     var repoName: String = realPath.fileName.toString()
+    var port: Int = 8000
 
     /** Parse CLI arguments into gitcity options. */
     fun parse(args: Array<String>): GitCityOptions {
-        var pragma: String? = null
-        for (arg in args) {
-            if (arg.startsWith("--")) pragma = arg.substring(2)
-            else if (pragma != null) {
-                when(pragma) {
-                    "help" -> { showHelp(); exitProcess(0) }
-                    "repoPath" -> repoPath = FileSystems.getDefault().getPath(arg)
-                    "filter" -> filter = Regex(arg)
-                }
-                pragma = null
-            } else throw IllegalArgumentException("Malformed CLI params!")
+        var optionName: String? = null
+        for (value in args) {
+            if (value.startsWith("--")) {
+                optionName = value.substring(2)
+            } else if (value.startsWith("-")) {
+                parseShortParam(value.substring(1))
+            } else if (optionName != null) {
+                parseParameterValue(optionName, value)
+                optionName = null
+            } else throw IllegalArgumentException("Malformed CLI option '$value' !")
         }
         return this
     }
 
+    private fun parseShortParam(shortOption: String) {
+        when(shortOption) {
+            "vv" -> { TRACE = true; DEBUG = true}
+            "v" -> { DEBUG = true}
+            "h" -> showHelp()
+            else -> throw IllegalArgumentException("Unknown CLI option '-$shortOption' !")
+        }
+    }
+
+    private fun parseParameterValue(optionName: String, optionValue: String) {
+        when (optionName) {
+            "help" -> showHelp()
+            "repoPath" -> repoPath = FileSystems.getDefault().getPath(optionValue)
+            "filter" -> filter = Regex(optionValue)
+            "port" -> port = Integer.parseInt(optionValue)
+            else -> throw IllegalArgumentException("Unknown CLI option '--$optionName' !")
+        }
+    }
+
     private fun showHelp() {
         println("Usage:")
-        println(" --help                This help")
-        println(" --repoPath <path>     Path to Git repository")
-        println(" --filter <regex>      Only watch files matching the regex")
+        println("  --help or -h          This help")
+        println("  --repoPath <path>     Path to Git repository. Default: .")
+        println("  --filter <regex>      Only watch files matching the regex. Default: .*")
+        println("  --port <number>       Port number to start the websever. Default: 8080")
+        println("  -v or -vv             Enable debug or trace log level")
+        exitProcess(0)
     }
 }

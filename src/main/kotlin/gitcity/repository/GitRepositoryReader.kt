@@ -1,10 +1,7 @@
 package gitcity.repository
 
-import gitcity.repository.GitLogstreamParser
-import gitcity.debug
-import gitcity.info
-import gitcity.repository.ChangeLog
 import gitcity.GitCityOptions
+import gitcity.info
 
 /**
  * Extract a git repository changelog into the gitcity gitcity.model.
@@ -26,7 +23,7 @@ class GitRepositoryReader {
                 "-w -b -R --no-merges --date-order --no-renames " +
                 "--numstat --format=format:%H%n%at%n%aN%n%s"
 
-        debug("Executing: $cmdLine")
+        info("Executing: $cmdLine")
         val gitProcess = Runtime.getRuntime().exec(cmdLine, arrayOf(), opts.realPath.toFile())
         val gitLogStream = gitProcess.inputStream
 

@@ -4,8 +4,8 @@ package gitcity
  * @author Benjamin Schmid <benjamin.schmid@exxcellent.de>
  */
 
-var TRACE = true
-var DEBUG = true
+var TRACE = false
+var DEBUG = false
 
 fun trace(msg: Any?) {
     if (TRACE) println("[TRACE] $msg")
