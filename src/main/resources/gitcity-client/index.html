@@ -41,7 +41,8 @@
 <script src='vendor/vrControls.js'></script>
 
 <script>
-    var restURL = '/city/latest';
+    var restBaseURL = '/city';
+    var epochDuration = 200;
 
     // from @mrdoob http://www.mrdoob.com/lab/javascript/webgl/city/01/
     //noinspection JSUnusedAssignment
@@ -200,21 +201,19 @@
     //		load city data and show elements
     //////////////////////////////////////////////////////////////////////////////////
 
-    var city, ground;
+    var city, ground, cityTimestamp;
+    var epochCount, currentEpoch = -1;
     var loader = new THREE.XHRLoader();
-    loader.load(restURL,
-                function ( xhrResponse ) {
-                var cityData = JSON.parse( xhrResponse );
-                var newCity = new THREEx.ProceduralCity(cityData);
-                scene.remove(city);
-                scene.add(newCity);
-                city = newCity;
 
-                var newGround = buildGroundPlane(cityData.worldLength);
-                scene.remove(ground);
-                scene.add(newGround);
-                ground = newGround;
-            }
+    loader.load(restBaseURL + "/stats",
+        function ( xhrResponse ) {
+            var stats = JSON.parse( xhrResponse );
+            replaceGroundPlane(stats.worldLength);
+
+            epochCount = stats.epochCount;
+            currentEpoch = 0;
+            replaceCity(0)
+        }
     );
 
     requestAnimationFrame(animate);	// Request animation frame loop function
@@ -246,6 +245,9 @@
 
         // Render the scene through the manager.
         manager.render(scene, camera, timestamp);
+
+        // If we passed some time, we replace the city with a newer copy
+        progressToNextCityIteration(timestamp);
 
         requestAnimationFrame( animate );	// repeat the animation
     }
@@ -289,6 +291,33 @@
         return canvas2;
     }
 
+    var loadingNewEpoch;
+    function progressToNextCityIteration(timestamp) {
+        if (timestamp - cityTimestamp > epochDuration
+                && currentEpoch < epochCount - 2
+                && !loadingNewEpoch) {
+            currentEpoch++;
+            replaceCity(currentEpoch)
+        } else { console.log("Nope");}
+    }
+
+    function replaceCity(epochIndex) {
+        loadingNewEpoch = true;
+        console.log("Starting to load epoch #" + epochIndex);
+        loader.load(restBaseURL + "/byIndex/" + epochIndex,
+                    function ( xhrResponse ) {
+                        var cityData = JSON.parse( xhrResponse );
+                        var newCity = new THREEx.ProceduralCity(cityData);
+                        scene.remove(city);
+                        scene.add(newCity);
+                        city = newCity;
+                        loadingNewEpoch = false;
+                        cityTimestamp = lastAnimateTimestamp;
+                        console.log("Epoch #" + epochIndex+ " loaded & finished");
+                    }
+        );
+    }
+
     /**
      * Creates a Skybox texture.
      * @returns {THREE.CubeTexture}
@@ -302,6 +331,14 @@
         var reflectionCube = new THREE.CubeTextureLoader().load( urls );
         reflectionCube.format = THREE.RGBFormat;
         return reflectionCube;
+    }
+
+    /** Replace predefined planed with new, correctly sized one. */
+    function replaceGroundPlane(worldLength) {
+        var newGround = buildGroundPlane(worldLength);
+        scene.remove(ground);
+        scene.add(newGround);
+        ground = newGround;
     }
 
     /**
