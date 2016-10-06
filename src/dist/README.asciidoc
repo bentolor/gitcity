@@ -1,0 +1,40 @@
+= Kurzanleitung für GitCity
+
+== Was ist GitCity?
+
+GitCity visualisiert die Dateien in einem Git Repository als virtuell begehbare Stadt.
+
+Die Größe der Gebäude entsprechen den Dateigrößen. Im animierten Modus wachsen diese
+über die Zeit.
+
+Als VR-taugliche Anwendung kann das Ergebnis auch mit einer VR-Brille betrachtet werden.
+Der Bluetooth-Controller der günstigen "VR Box II" wird unterstützt um im Raum zu
+durchlaufen
+
+== Vorbedingungen
+Java 8+ muss installiert sein. Ein ausgechecktes Git-Repository oder die Log-Ausgabe
+eines Laufs dient als Datenquelle
+
+== Komplikationsloser Schnellstart
+
+   bin/gitcity-server --gitLog rent-a-tank-history.txt
+
+starten und unter http://localhost:8000/ der Stadt beim wachsen zuschauen.
+
+`bin/gitcity-server --help` gibt Dir eine Übersicht der Optionen für den Server.
+Optionen für den Aufruf auf dem Client erscheinen beim Start in der Console.
+
+== Varianten
+
+* Bewege dich im Raum mit dem Bluetooth-Controller, oder über `W`, `A`, `D`, `X`, `I`,
+  `K` und Pfeiltasten. Drehen mit der Maus klicken oder in der Brille den Kopf bewegen.
+* Keine Animation? Rufe statt dessen http://localhost:8000/?static=true auf
+* Dich interessieren nur die Bewegung bestimmter Dateien? z.B. der Java-Dateien?
+  Du kannst beim Start einen Regulären Ausduck zum Filtern der visualisierten Dateien
+  angeben. Der folgende Aufruf betrachtet nur .java-Dateien
+
+      bin/gitcity-server --gitLog rent-a-tank-history.txt --filter ".*\.java\$"
+          bzw.
+      bin\gitcity-server.bat --gitLog rent-a-tank-history.txt --filter ".*\.java$"
+
+

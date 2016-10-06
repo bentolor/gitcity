@@ -3,7 +3,7 @@
     <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
     <option name="MAIN_CLASS_NAME" value="GitCityKt" />
     <option name="VM_PARAMETERS" value="" />
-    <option name="PROGRAM_PARAMETERS" value="--filter &quot;.+\..*$&quot; -v  --gitLog rent-a-tank-history.txt" />
+    <option name="PROGRAM_PARAMETERS" value="--filter &quot;.+\..*$&quot; -v  --gitLog src/dist/rent-a-tank-history.txt" />
     <option name="WORKING_DIRECTORY" value="" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
     <option name="ALTERNATIVE_JRE_PATH" />
