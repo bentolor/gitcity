@@ -48,6 +48,7 @@ data class GitCityOptions(
     private fun parseParameterValue(optionName: String, optionValue: String) {
         when (optionName) {
             "repoPath" -> repoPath = FileSystems.getDefault().getPath(optionValue)
+            "branch" -> branchName = optionValue
             "filter" -> filter = Regex(optionValue)
             "port" -> port = Integer.parseInt(optionValue)
             "gitLog" -> gitLog = FileSystems.getDefault().getPath(optionValue)
@@ -59,6 +60,7 @@ data class GitCityOptions(
         println("Usage:")
         println("  --help or -h          This help")
         println("  --repoPath <path>     Path to Git repository. Default: .")
+        println("  --branch <name>       Branch to follow. Default: master")
         println("  --filter <regex>      Only watch files matching the regex. Default: .*")
         println("  --port <number>       Port number to start the websever. Default: 8080")
         println("  --gitLog <filepath>   A text file containing the log output of the Git call GitCity")
