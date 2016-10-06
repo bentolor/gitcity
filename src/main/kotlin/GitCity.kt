@@ -21,8 +21,6 @@ fun main(args: Array<String>) {
     val buildingMapper = BuildingMapper(analysis)
 
     port(opts.port)
-    info("Access http://localhost:${opts.port}/ with your browser or VR device to access GitCity")
-    info("   Use http://localhost:${opts.port}/?static=true to disable animation")
     staticFiles.location("/gitcity-client")
 
     get("/city/latest", { req, res ->
@@ -43,12 +41,28 @@ fun main(args: Array<String>) {
         JsonWriter(buildingMapper, buildingMapper.epochIds[epochIndex])
                 .writeTo(res.raw().outputStream)
     })
+
+    showUrlParameteHelp(opts)
+}
+
+private fun showUrlParameteHelp(opts: GitCityOptions) {
+    info("")
+    info("Access http://localhost:${opts.port}/ with your browser or VR device to access GitCity")
+    info("  The URL support options as query parameters:")
+    info("      static = <true|false>    directly jump to the finished city w/o animation ")
+    info("      frameDuration = <500>   ms between each frame. ")
+    info("")
+    info("  Example:  http://localhost:${opts.port}/?static=false&frameDuration=300 ")
+    info("")
 }
 
 private fun printLogo() {
-    println("\n     _____ _ _   _____ _ _       \n" +
+    println("~".repeat(100))
+    println("     _____ _ _   _____ _ _       \n" +
             "    |   __|_| |_|     |_| |_ _ _      GitCity\n" +
             "    |  |  | |  _|   --| |  _| | |     \n" +
             "    |_____|_|_| |_____|_|_| |_  |     A VR visualisation of Git file history changes\n" +
             "                            |___|     2016 @bentolor\n")
+    println("\n   Start with --help for help on usage")
+    println("~".repeat(100))
 }

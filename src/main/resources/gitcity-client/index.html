@@ -42,7 +42,7 @@
 
 <script>
     var restBaseURL = '/city';
-    var epochDuration = 600;
+    var epochDuration = getUrlQueryOpt("frameDuration", 500);
     var noAnimation = getUrlQueryOpt("static");
 
     // from @mrdoob http://www.mrdoob.com/lab/javascript/webgl/city/01/
