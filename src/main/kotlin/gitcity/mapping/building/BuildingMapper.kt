@@ -14,13 +14,14 @@ import java.lang.Math.pow
  * GitCity representing the files.
  * @author Benjamin Schmid <benjamin.schmid@exxcellent.de>
  */
-class BuildingMapper(val analysis: ChangeLogAnalysis, val worldLength: Double = 30.0) {
+class BuildingMapper(val analysis: ChangeLogAnalysis) {
 
     val treeMapByEpoch: MutableMap<String, TreeModel>
     val epochIds: List<String>
 
     val sourceWorldVolume: Double
     val sourceWorldArea: Double
+    val worldLength: Double
 
     init {
         epochIds = analysis.epochs.map { it.changeSet.id }
@@ -29,6 +30,10 @@ class BuildingMapper(val analysis: ChangeLogAnalysis, val worldLength: Double = 
 
         sourceWorldVolume = tree.lineCount.toDouble()
         sourceWorldArea = sourceWorldVolume / pow(sourceWorldVolume, 1.0 / 3)
+
+        // We want the _average_ building around 0.8m x 0.8m x 0.8m (because some will be quite larger!)
+        // Assuming same-sized buildings/files as perfect cubes the total area should be n * 0.8 x 0.8.
+        worldLength = Math.sqrt(tree.fileCount * 0.8 * 0.8)
 
         val worldRect = Rect(-worldLength / 2, -worldLength / 2, worldLength, worldLength)
 
