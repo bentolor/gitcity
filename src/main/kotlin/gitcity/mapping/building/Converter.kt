@@ -1,5 +1,6 @@
 package gitcity.mapping.building
 
+import gitcity.debug
 import gitcity.mapping.treemap.TreeModel
 import gitcity.repository.RepoFile
 import gitcity.trace
@@ -25,12 +26,21 @@ fun RepoFile.toTreeModel(buildingMapper: BuildingMapper) : TreeModel {
 fun RepoFile.buildTreeModelByTemplate(template: TreeModel, buildingMapper: BuildingMapper) : TreeModel {
 
     val sourceFile = template.mappable as MappableRepoFile
-    val locRatio = this.lineCount / sourceFile.repoFile.lineCount
-    val newTargetHeight = sourceFile.buildingProperties.targetHeight * locRatio
-    val newSourceHeight = sourceFile.buildingProperties.sourceHeight * locRatio
+    val sourceFileName = sourceFile.repoFile.name
+    val locRatio = this.lineCount.toDouble() / sourceFile.repoFile.lineCount
+    val templateTargetHeight = sourceFile.buildingProperties.targetHeight
+    val templateHeight = sourceFile.buildingProperties.sourceHeight
+    val newTargetHeight = templateTargetHeight * locRatio
+    val newSourceHeight = templateHeight * locRatio
+
+    if ("BuildingMapper.kt" == sourceFileName) {
+        debug("${this.lineCount} / ${sourceFile.repoFile.lineCount} = $locRatio")
+    }
 
     val newProps = sourceFile.buildingProperties.copy(sourceHeight = newSourceHeight, targetHeight = newTargetHeight)
-    val treeModel = TreeModel(MappableRepoFile(this, newProps))
+    val newCopy = TreeModel(MappableRepoFile(this, newProps))
+    newCopy.mappable.bounds = template.mappable.bounds.copy()
+    newCopy.mappable.size = template.mappable.size
 
     val fileChildren = this.children
     if (fileChildren != null) {
@@ -38,14 +48,14 @@ fun RepoFile.buildTreeModelByTemplate(template: TreeModel, buildingMapper: Build
             if (child.lineCount > 0) {   // ignore empty files
                 val childTemplate = template.childByFilename(child.name)
                 if (childTemplate != null)
-                    treeModel.addChild(child.buildTreeModelByTemplate(childTemplate, buildingMapper))
+                    newCopy.addChild(child.buildTreeModelByTemplate(childTemplate, buildingMapper))
                 else
                     trace("File ${child.path} seems to have vanished during its lifetime")
             }
         }
     }
 
-    return treeModel
+    return newCopy
 }
 
 fun TreeModel.childByFilename(fileName: String): TreeModel? =

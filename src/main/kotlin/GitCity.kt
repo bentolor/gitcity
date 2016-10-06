@@ -23,9 +23,23 @@ fun main(args: Array<String>) {
     port(opts.port)
     info("Access http://localhost:${opts.port}/ with your browser or VR device to access GitCity")
     staticFiles.location("/gitcity-client")
-    get("/items/latest", { req, res ->
+
+    get("/city/latest", { req, res ->
         res.type("application/json")
         JsonWriter(buildingMapper, buildingMapper.epochIds.last())
+                .writeTo(res.raw().outputStream)
+    })
+
+    get("/city/stats", { req, res ->
+        res.type("application/json")
+        "{ \"epochCount\": ${buildingMapper.epochIds.size} } "
+    })
+
+    get("/city/byIndex/:index", { req, res ->
+        res.type("application/json")
+        val param = req.params(":index")
+        val epochIndex: Int = param?.toInt() ?: throw IllegalArgumentException("Unknown index $param")
+        JsonWriter(buildingMapper, buildingMapper.epochIds[epochIndex])
                 .writeTo(res.raw().outputStream)
     })
 }

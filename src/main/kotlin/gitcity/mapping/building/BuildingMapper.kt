@@ -1,6 +1,7 @@
 package gitcity.mapping.building
 
 import gitcity.ChangeLogAnalysis
+import gitcity.debug
 import gitcity.mapping.treemap.Rect
 import gitcity.mapping.treemap.SquarifiedLayout
 import gitcity.mapping.treemap.TreeModel
@@ -37,6 +38,7 @@ class BuildingMapper(val analysis: ChangeLogAnalysis, val worldLength: Double = 
 
         // now iterate over remaining epochs & build a copy of the final city with adjusted properties (height)
         for (epochId in epochIds) {
+            debug("Processing epoch $epochId")
             treeMapByEpoch.getOrPut(epochId, { buildInterimsCity(finishedCity, epochId) })
         }
     }
