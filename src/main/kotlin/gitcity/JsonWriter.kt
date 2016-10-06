@@ -14,7 +14,9 @@ class JsonWriter(private val buildingMapper: BuildingMapper) {
         output.writer().use { writer ->
             writer.append("{ \"mapItems\" : [\n")
             buildingMapper.treeMap.accept(LeafNodeJsonWriter(writer))
-            writer.append("\n] }\n")
+            writer.append("\n],\n")
+            writer.append("\"worldLength\": ${buildingMapper.worldLength}")
+            writer.append("}\n")
             writer.flush()
         }
     }

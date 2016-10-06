@@ -12,7 +12,7 @@ import gitcity.repository.RepoFile
  * GitCity representing the files.
  * @author Benjamin Schmid <benjamin.schmid@exxcellent.de>
  */
-class BuildingMapper(analysis: ChangeLogAnalysis, worldLength: Double = 30.0) {
+class BuildingMapper(analysis: ChangeLogAnalysis, val worldLength: Double = 30.0) {
 
     val treeMap: TreeModel
     val tree: RepoFile
