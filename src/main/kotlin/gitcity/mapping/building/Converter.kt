@@ -25,7 +25,6 @@ fun RepoFile.toTreeModel(buildingMapper: BuildingMapper) : TreeModel {
 fun RepoFile.buildTreeModelByTemplate(template: TreeModel, buildingMapper: BuildingMapper) : TreeModel {
 
     val sourceFile = template.mappable as MappableRepoFile
-    val sourceFileName = sourceFile.repoFile.name
     val locRatio = this.lineCount.toDouble() / sourceFile.repoFile.lineCount
     val templateTargetHeight = sourceFile.buildingProperties.targetHeight
     val templateHeight = sourceFile.buildingProperties.sourceHeight
