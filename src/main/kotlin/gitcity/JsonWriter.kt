@@ -49,7 +49,9 @@ class JsonWriter(private val buildingMapper: BuildingMapper, val epochId: String
         }
     }
 
+    private val jsonFilteredChars = listOf('\\','"',' ','\'')
+
     /** Literals like "UseCase \303\234bersicht.uml" would break JSON otherwise. */
-    private fun jsonFilter(text: String): String = text.filter { it != '\\' && it != '"' }
+    private fun jsonFilter(text: String): String = text.filter { !jsonFilteredChars.contains(it) }
 
 }
