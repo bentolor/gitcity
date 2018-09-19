@@ -7,3 +7,13 @@ A  3D / VR visualisation of a git file history
 1. Install Java 8 and ensure `JAVA_HOME` is pointing to it
 2. run `./gradlew run` or `gradlew.bat run`
 3. Go to http://localhost:8000/
+
+== Navigating
+
+Sorry – the keys are due to the strange chinese
+VR controller
+
+* Press `I` and `K` to move up/down
+* Use mouse to rotate
+* `A` move forward, `D` move backward
+` W` right, `X` left
