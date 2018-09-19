@@ -1,6 +1,10 @@
 = GitCity
 
-A  3D / VR visualisation of a git file history
+A  *interactive*, *animated* 3D, *VR-capable* WebVR
+visualisation of a git repository history in the style
+of a large city using Kotlin.
+
+image:doc/gitcity-screenshot.png[Screenshot of Gitcity in action]
 
 == Getting started
 
@@ -11,7 +15,7 @@ A  3D / VR visualisation of a git file history
 == Navigating
 
 Sorry – the keys are due to the strange chinese
-VR controller
+VR controller I used in conjuction with a **Cardboard VR device**
 
 * Press `I` and `K` to move up/down
 * Use mouse to rotate
