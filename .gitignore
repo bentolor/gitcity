@@ -15,11 +15,11 @@
 .idea/sqlDataSources.xml
 .idea/dynamic.xml
 .idea/uiDesigner.xml
-.idea/misc.xml
+#.idea/misc.xml
 
 # Gradle:
-.idea/gradle.xml
-.idea/libraries
+#.idea/gradle.xml
+#.idea/libraries
 
 ## Plugin-specific files:
 
